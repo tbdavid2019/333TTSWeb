@@ -2351,9 +2351,17 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
             populateIndexVoicesUI(serviceKey) {
                 const select = document.getElementById('indexVoice');
-                const voices = this[`voices_${serviceKey}`] || 
+                let voicesData = this[`voices_${serviceKey}`] || 
                     (serviceKey === 'index_tw' ? ['jay_klee', 'gentle_female', 'professional_male'] : ['jay', 'gentle_female', 'professional_male']);
                 
+                // If it is an object (keys are voices), convert to array of keys
+                let voices = [];
+                if (Array.isArray(voicesData)) {
+                    voices = voicesData;
+                } else if (typeof voicesData === 'object' && voicesData !== null) {
+                    voices = Object.keys(voicesData);
+                }
+
                 select.innerHTML = '';
                 voices.forEach(voice => {
                     const opt = document.createElement('option');
