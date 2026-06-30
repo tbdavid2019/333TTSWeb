@@ -2408,14 +2408,28 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 // Populate speakers
                 const spkSelect = document.getElementById('cosySpeaker');
                 spkSelect.innerHTML = '';
+                
+                // Add preset server-side cloned speakers (Zero-shot / Cross-lingual shortcuts)
+                const optJay = document.createElement('option');
+                optJay.value = 'preset_jay';
+                optJay.textContent = '周杰倫 (Jay Chou - 推薦)';
+                spkSelect.appendChild(optJay);
+
+                const optHayley = document.createElement('option');
+                optHayley.value = 'preset_hayley';
+                optHayley.textContent = '溫柔女聲 (Hayley)';
+                spkSelect.appendChild(optHayley);
+
                 const speakers = data.speakers || [''];
                 
                 // Filter out empty string or add a default
                 speakers.forEach(spk => {
-                    const opt = document.createElement('option');
-                    opt.value = spk;
-                    opt.textContent = spk === '' ? '預設語音 (Default)' : spk;
-                    spkSelect.appendChild(opt);
+                    if (spk && spk.trim() !== '') {
+                        const opt = document.createElement('option');
+                        opt.value = spk;
+                        opt.textContent = spk + ' (模型內建)';
+                        spkSelect.appendChild(opt);
+                    }
                 });
             }
 
@@ -2543,10 +2557,22 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                         if (submode === 'sft') {
                             const spk = document.getElementById('cosySpeaker').value;
                             if (!spk || spk.trim() === '') {
-                                throw new Error('當前 CosyVoice 模型不包含內建音色，請切換至「零樣本複製 (Zero-Shot)」上傳音檔克隆，或切換至其他支援 SFT 的模型！');
+                                throw new Error('請選擇一個有效的語音音色角色！');
                             }
-                            voiceName = spk;
-                            formData.append('speaker', spk);
+                            
+                            if (spk === 'preset_jay' || spk === 'preset_hayley') {
+                                // Under the hood, use cross_lingual mode to clone server-side reference audio files
+                                const presetFile = spk === 'preset_jay' ? 'asset/jay.wav' : 'asset/Hayley.wav';
+                                const displayName = spk === 'preset_jay' ? '周杰倫 (Jay)' : '溫柔女聲 (Hayley)';
+                                
+                                voiceName = `${displayName} [CosyVoice3]`;
+                                formData.set('mode', 'cross_lingual'); // Override mode
+                                formData.append('prompt_audio_path', presetFile);
+                            } else {
+                                // Standard SFT model-defined speaker
+                                voiceName = `${spk} [CosyVoice3 SFT]`;
+                                formData.append('speaker', spk);
+                            }
                         } else {
                             // Zero-Shot Cloning
                             const file = this.uploadedFiles.cosyvoice;
