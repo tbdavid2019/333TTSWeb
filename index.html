@@ -2857,6 +2857,27 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     // Draw rounded bar
                     this.drawRoundRect(ctx, x, y, barWidth, barHeight, 2 * window.devicePixelRatio);
                 }
+
+                // Draw playhead vertical line and handle
+                const playheadX = progress * width;
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 1.5 * window.devicePixelRatio;
+                ctx.beginPath();
+                ctx.moveTo(playheadX, 0);
+                ctx.lineTo(playheadX, height);
+                ctx.stroke();
+
+                // Draw playhead handle dot (glowing circle)
+                ctx.fillStyle = primaryColor;
+                ctx.shadowColor = primaryColor;
+                ctx.shadowBlur = 4 * window.devicePixelRatio;
+                ctx.beginPath();
+                ctx.arc(playheadX, centerY, 5 * window.devicePixelRatio, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Reset shadow settings for next renders
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
             }
 
             drawEmptyWaveform() {
@@ -2868,12 +2889,27 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
                 ctx.clearRect(0, 0, width, height);
 
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.lineWidth = 2 * window.devicePixelRatio;
-                ctx.beginPath();
-                ctx.moveTo(0, centerY);
-                ctx.lineTo(width, centerY);
-                ctx.stroke();
+                // Get theme-specific muted colors so it works perfectly in Latte (Light) and Frappé (Dark)
+                const mutedColor = getComputedStyle(document.documentElement).getPropertyValue('--text-dark').trim() || 'rgba(127,127,127,0.3)';
+                ctx.fillStyle = mutedColor;
+
+                const barWidth = 3 * window.devicePixelRatio;
+                const barGap = 2 * window.devicePixelRatio;
+                const totalBarWidth = barWidth + barGap;
+                const barCount = Math.floor(width / totalBarWidth);
+
+                // Draw a beautiful symmetric dummy wave (looks like a smooth sound fingerprint)
+                for (let i = 0; i < barCount; i++) {
+                    const x = i * totalBarWidth;
+                    const pct = i / barCount;
+                    // Formula to create a nice fingerprint-style waveform
+                    const factor = Math.sin(pct * Math.PI) * (0.3 + 0.7 * Math.sin(pct * Math.PI * 8));
+                    let barHeight = Math.abs(factor) * height * 0.45;
+                    if (barHeight < 3) barHeight = 3;
+
+                    const y = centerY - barHeight / 2;
+                    this.drawRoundRect(ctx, x, y, barWidth, barHeight, 2 * window.devicePixelRatio);
+                }
             }
 
             drawRoundRect(ctx, x, y, width, height, radius) {
