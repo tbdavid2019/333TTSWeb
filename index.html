@@ -1928,10 +1928,18 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 this.config.host = localStorage.getItem('tts_host') || defaultHost;
                 this.config.proxy = localStorage.getItem('tts_proxy') || '';
                 
-                this.config.urls.index_main = localStorage.getItem('tts_url_8001') || `http://${this.config.host}:8001`;
-                this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || `http://${this.config.host}:8002`;
-                this.config.urls.cosyvoice = localStorage.getItem('tts_url_8003') || `http://${this.config.host}:8003`;
-                this.config.urls.qwen = localStorage.getItem('tts_url_8005') || `http://${this.config.host}:8005`;
+                // If the site is loaded over HTTPS (like GitHub Pages or tts.create360.ai SSL),
+                // default to our secure HTTPS proxy endpoints to prevent Mixed Content blocks.
+                const isHttps = window.location.protocol === 'https:';
+                const defaultMainUrl = isHttps ? 'https://tts.create360.ai/8001' : `http://${this.config.host}:8001`;
+                const defaultTwUrl = isHttps ? 'https://tts.create360.ai/8002' : `http://${this.config.host}:8002`;
+                const defaultCosyUrl = isHttps ? 'https://tts.create360.ai/8003' : `http://${this.config.host}:8003`;
+                const defaultQwenUrl = isHttps ? 'https://tts.create360.ai/8005' : `http://${this.config.host}:8005`;
+
+                this.config.urls.index_main = localStorage.getItem('tts_url_8001') || defaultMainUrl;
+                this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || defaultTwUrl;
+                this.config.urls.cosyvoice = localStorage.getItem('tts_url_8003') || defaultCosyUrl;
+                this.config.urls.qwen = localStorage.getItem('tts_url_8005') || defaultQwenUrl;
 
                 // Update settings UI fields
                 document.getElementById('settingHost').value = this.config.host;
