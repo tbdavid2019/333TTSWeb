@@ -14,6 +14,7 @@
 ### 🔊 音頻視覺化與播放控制增強
 - **新增播放指引線與滑塊**：音頻波形圖上新增了垂直播放指引線（Playhead）與發光滑塊（Scrubber Dot），讓目前播放進度具備清晰的視覺反饋。
 - **新增預設音波占位符 (Mock Waveform)**：若尚未載入語音，音波區域會動態渲染由數學公式生成的灰度音軌指紋，取代原本隱形的平線，以充實介面完整度。
+- **新增 CosyVoice 3 內建預設音色**：將 `jay_promptvn.wav` 從 IndexTTS 容器複製到 CosyVoice 容器的 `/asset` 中。並在前端利用 `cross_lingual` 進階推理模式，讓使用者免去手動上傳參考音檔，直接以 **周杰倫 (Jay)** 與 **溫柔女聲 (Hayley)** 當作預設音色合成！
 
 ### 🐛 Bug 修復與清理
 - **修復音色選單解析錯誤**：修正 `populateIndexVoicesUI` 處理 `/audio/voices` 返回 JSON 物件時的遍歷 Bug，防止音色下拉選單留空導致 API 請求攜帶空字串觸發伺服器 `KeyError: ''`。
