@@ -31,16 +31,32 @@
 
 ---
 
-## 🔒 瀏覽器安全限制與 CORS 指引（重要）
+## 🔒 瀏覽器安全與 HTTPS 反向代理（開箱即用）
 
-由於 GitHub Pages 強制使用 **HTTPS** 安全連接，而後端 API 通常為 **HTTP**，瀏覽器可能會因為以下規範阻擋請求：
+由於 GitHub Pages 強制使用 **HTTPS** 安全連接，為了避免瀏覽器的 **混合內容 (Mixed Content) 封鎖** 與 **CORS 限制**，我們已經在伺服器上透過 Nginx 配置了安全反向代理與 Let's Encrypt SSL 憑證：
 
-1. **混合內容 (Mixed Content)**：
-   - 瀏覽器預設不允許 HTTPS 網頁直接發送非加密的 HTTP 請求。
-   - **解決方案**：在網址列右側的安全盾牌或網頁安全性設定中，選取 **「允許載入不安全指令碼」**，或者在下載後直接在本地雙擊打開 `index.html` 執行。
-2. **CORS（跨來源資源共享）限制**：
-   - 目前 `talk-dev.aitago.tw` 上的 `8001`、`8002`、`8003` (CosyVoice已修復) 及 `8005` 均已配備對應的 CORS 跨網域允許標頭，因此跨網域存取運作正常。
-   - 若您在使用中遇到 CORS 封鎖，可以在網頁**「設定」**分頁配置 CORS 代理（如 `https://cors-anywhere.herokuapp.com/`）來轉發請求。
+- **反向代理域名**：`https://tts.create360.ai`
+- **安全路徑對照**：
+  - `https://tts.create360.ai/8001/` ➔ `http://127.0.0.1:8001/` (IndexTTS Main)
+  - `https://tts.create360.ai/8002/` ➔ `http://127.0.0.1:8002/` (IndexTTS TW)
+  - `https://tts.create360.ai/8003/` ➔ `http://127.0.0.1:8003/` (CosyVoice 3)
+  - `https://tts.create360.ai/8005/` ➔ `http://127.0.0.1:8005/` (Qwen TTS)
+
+**自動適應邏輯**：
+網頁 [index.html](file:///Users/david/Documents/git-360/360TTSWeb/index.html) 具備自動感應功能。在 HTTPS 網頁環境下開啟時，預設 API 終端點會**自動切換**為上述 HTTPS 安全代理網址，不再需要手動修改設定，直接開箱即可通暢檢測為「線上」並正常生成語音！
+
+---
+
+## 🎨 高級設計與視覺體驗
+- **雙主題系統**：支援一鍵切換**深色（Catppuccin Frappé）**與**淺色（Catppuccin Latte）**主題，針對長時間閱讀與眼睛疲勞特別優化，調色盤柔和且具備高對比。
+- **懸浮固定導覽列**：頂部 Navigation Bar 採用 `backdrop-filter: blur(16px)` 的懸浮毛玻璃效果，提供極致流暢的視覺回饋。
+- **進階播放軌與進度拉條**：音波圖除了展示聲學指紋，還包含實時播放進度直條與發光滑塊（Scrubber Dot），支援點擊任意處進行音訊快轉。
+- **使用頻率優先佈局**：遵循 UI 設計的使用頻率原則，將「輸入欲合成之文字」及操作按鈕移至最顯眼的最上方，降低使用者操作的視覺負擔。
+
+---
+
+## 📅 更新日誌
+詳細的開發歷程與變更內容，請參閱 [CHANGELOG.md](file:///Users/david/Documents/git-360/360TTSWeb/CHANGELOG.md)。
 
 ## 📄 授權條款
 本專案採用 **GNU Affero General Public License v3.0 (AGPL-3.0)** 條款授權開源。
