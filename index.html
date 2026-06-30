@@ -763,7 +763,6 @@
             border-radius: var(--radius-lg);
             padding: 1.5rem;
             margin-bottom: 2rem;
-            display: none;
             animation: slide-up 0.4s ease-out;
             box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
         }
@@ -811,6 +810,70 @@
             width: 100%;
             height: 100%;
             display: block;
+        }
+
+        /* --- AUDIO PROGRESS BAR SLIDER --- */
+        .player-progress-row {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .player-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        [data-theme="latte"] .player-slider {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .player-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+        }
+
+        .player-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            margin-top: -4px;
+            box-shadow: 0 0 10px var(--primary-glow);
+            transition: var(--transition-fast);
+        }
+
+        .player-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--secondary);
+            box-shadow: 0 0 12px var(--secondary-glow);
+        }
+
+        .player-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--primary-glow);
+            transition: var(--transition-fast);
+        }
+
+        .player-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            background: var(--secondary);
         }
 
         .player-controls {
@@ -1591,8 +1654,8 @@
                         <div class="player-card" id="playerCard">
                             <div class="player-header">
                                 <div>
-                                    <div class="player-info-title" id="playerInfoModel">IndexTTS (Main)</div>
-                                    <div class="player-info-text" id="playerInfoText">生成的文字預覽...</div>
+                                    <div class="player-info-title" id="playerInfoModel">語音播放器</div>
+                                    <div class="player-info-text" id="playerInfoText">尚無播放中的音訊，請先點擊「開始語音合成」</div>
                                 </div>
                                 <div style="display: flex; gap: 0.5rem;">
                                     <button class="btn-player-action" id="btnDownload" title="下載 WAV 音檔">
@@ -1606,8 +1669,13 @@
                             </div>
 
                             <!-- Waveform Visualization -->
-                            <div class="waveform-container" id="waveformContainer" title="點擊調整播放進度">
+                            <div class="waveform-container" id="waveformContainer" title="點擊調整播放進度" style="margin-bottom: 0.5rem;">
                                 <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+                            </div>
+
+                            <!-- Progress Bar Slider -->
+                            <div class="player-progress-row">
+                                <input type="range" class="player-slider" id="playerSlider" min="0" max="100" value="0" step="0.1" title="滑動調整進度">
                             </div>
 
                             <div class="player-controls">
@@ -2192,6 +2260,16 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     e.preventDefault();
                     this.reloadCosyVoiceModel();
                 });
+
+                // Scrubber slider change event
+                const playerSlider = document.getElementById('playerSlider');
+                playerSlider.addEventListener('input', (e) => {
+                    if (!this.audioElement.duration || !this.currentAudioBlob) return;
+                    const pct = parseFloat(e.target.value) / 100;
+                    this.audioElement.currentTime = pct * this.audioElement.duration;
+                    document.getElementById('playerCurrentTime').textContent = this.formatTime(this.audioElement.currentTime);
+                    this.drawStaticWaveform(pct);
+                });
             }
 
             updateCharCount() {
@@ -2739,6 +2817,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 this.pauseAudio();
                 this.audioElement.currentTime = 0;
                 document.getElementById('playerCurrentTime').textContent = '0:00';
+                document.getElementById('playerSlider').value = 0;
                 this.drawStaticWaveform(); // redraw clean waveform
             }
 
@@ -2756,6 +2835,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     // Render waveform with active progression
                     const progress = this.audioElement.currentTime / this.audioElement.duration;
                     this.drawStaticWaveform(progress);
+                    document.getElementById('playerSlider').value = progress * 100 || 0;
 
                     this.playbackTimer = requestAnimationFrame(update);
                 };
@@ -2816,6 +2896,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     this.audioElement.currentTime = pct * this.audioElement.duration;
                     document.getElementById('playerCurrentTime').textContent = this.formatTime(this.audioElement.currentTime);
                     this.drawStaticWaveform(pct);
+                    document.getElementById('playerSlider').value = pct * 100;
                 });
             }
 
