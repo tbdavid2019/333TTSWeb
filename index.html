@@ -356,7 +356,7 @@
         /* --- MODEL SELECTOR GRIDS --- */
         .model-selector-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -365,6 +365,78 @@
             .model-selector-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        .model-category-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+            border-left: 3px solid var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- SWITCH TOGGLE FOR MASKING NAMES --- */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .3s;
+            border: 1px solid var(--border-color);
+        }
+
+        [data-theme="latte"] .slider {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-main);
+            transition: .3s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+            background-color: white;
+        }
+
+        .slider.round {
+            border-radius: 20px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
         }
 
         .model-card {
@@ -1348,6 +1420,16 @@
                     <span>檢測中</span>
                 </div>
             </div>
+            <div class="status-card" data-service="qwen">
+                <div class="status-info">
+                    <span class="status-name">Qwen TTS</span>
+                    <span class="status-port">Port 8005</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot pulsate"></span>
+                    <span>檢測中</span>
+                </div>
+            </div>
             <div class="status-card" data-service="index_tw">
                 <div class="status-info">
                     <span class="status-name">IndexTTS (TW)</span>
@@ -1368,10 +1450,10 @@
                     <span>檢測中</span>
                 </div>
             </div>
-            <div class="status-card" data-service="qwen">
+            <div class="status-card" data-service="cosyvoice2">
                 <div class="status-info">
-                    <span class="status-name">Qwen TTS</span>
-                    <span class="status-port">Port 8005</span>
+                    <span class="status-name">CosyVoice 2</span>
+                    <span class="status-port">Port 8006</span>
                 </div>
                 <div class="status-badge checking">
                     <span class="status-dot pulsate"></span>
@@ -1431,44 +1513,65 @@
 
                         <!-- MODEL SELECTOR -->
                         <div class="card">
-                            <h3 class="card-header-title">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="7" height="9"/>
-                                    <rect x="14" y="3" width="7" height="5"/>
-                                    <rect x="14" y="12" width="7" height="9"/>
-                                    <rect x="3" y="16" width="7" height="5"/>
-                                </svg>
-                                選擇語音合成模型
+                            <h3 class="card-header-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="7" height="9"/>
+                                        <rect x="14" y="3" width="7" height="5"/>
+                                        <rect x="14" y="12" width="7" height="9"/>
+                                        <rect x="3" y="16" width="7" height="5"/>
+                                    </svg>
+                                    選擇語音合成模型
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: normal; text-transform: none;">
+                                    <span style="color: var(--text-muted); font-size: 0.8rem;">外部展示模式</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="btnMaskNames" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                             </h3>
                             
+                            <div class="model-category-header">國語 (台灣特色腔調)</div>
                             <div class="model-selector-grid">
                                 <div class="model-card selected" data-model="index_main">
                                     <div class="model-icon">
                                         <span>1</span>
                                     </div>
                                     <div class="model-card-title">IndexTTS (Main)</div>
-                                    <div class="model-card-desc">高音質主模型，支援多種預設中文音色與上傳複製</div>
+                                    <div class="model-card-desc">高音質國語主模型，支援多種預設中文音色與上傳複製</div>
                                 </div>
-                                <div class="model-card" data-model="index_tw">
+                                <div class="model-card" data-model="qwen">
                                     <div class="model-icon">
                                         <span>2</span>
+                                    </div>
+                                    <div class="model-card-title">Qwen TTS</div>
+                                    <div class="model-card-desc">基於通義千問的多語言大模型，自然度高</div>
+                                </div>
+                            </div>
+                            
+                            <div class="model-category-header" style="margin-top: 1rem;">台語 (微帶有些許國語)</div>
+                            <div class="model-selector-grid">
+                                <div class="model-card" data-model="index_tw">
+                                    <div class="model-icon">
+                                        <span>3</span>
                                     </div>
                                     <div class="model-card-title">IndexTTS (TW)</div>
                                     <div class="model-card-desc">專為台灣腔調與閩南話優化之語音模型</div>
                                 </div>
                                 <div class="model-card" data-model="cosyvoice">
                                     <div class="model-icon">
-                                        <span>3</span>
+                                        <span>4</span>
                                     </div>
                                     <div class="model-card-title">CosyVoice 3</div>
                                     <div class="model-card-desc">阿里開源最新語音複製模型，支援零樣本極速克隆</div>
                                 </div>
-                                <div class="model-card" data-model="qwen">
+                                <div class="model-card" data-model="cosyvoice2">
                                     <div class="model-icon">
                                         <span>5</span>
                                     </div>
-                                    <div class="model-card-title">Qwen TTS</div>
-                                    <div class="model-card-desc">基於通義千問的 1.7B 多語言大模型，自然度高</div>
+                                    <div class="model-card-title">CosyVoice 2</div>
+                                    <div class="model-card-desc">教育部資料集精調之 CosyVoice 2 語音模型</div>
                                 </div>
                             </div>
 
@@ -1609,6 +1712,25 @@
                                         <button class="reload-btn" id="cosyRandomSeedBtn">🎲 隨機</button>
                                     </div>
                                     <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">-1 表示使用完全隨機種子。</span>
+                                </div>
+                            </div>
+
+                            <!-- CosyVoice 2 Options -->
+                            <div id="options-cosyvoice2" class="model-options-group hidden">
+                                <div class="form-group">
+                                    <label class="form-label" for="cosy2Speaker">選擇角色 (Speaker)</label>
+                                    <select class="form-select" id="cosy2Speaker">
+                                        <option value="gentle_female">溫柔女聲 (gentle_female)</option>
+                                        <option value="professional_male">沉穩男聲 (professional_male)</option>
+                                    </select>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">此為教育部台語資料集精調之極速克隆音色。</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cosy2Seed">隨機種子 (Seed)</label>
+                                    <div class="form-input-row">
+                                        <input type="number" class="form-input" id="cosy2Seed" value="0" min="0">
+                                        <button class="reload-btn" id="cosy2RandomSeedBtn">🎲 隨機</button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1778,6 +1900,10 @@
                                 <div class="form-group" style="margin-bottom: 0.75rem;">
                                     <label style="font-size: 0.75rem; color: var(--text-muted);">CosyVoice 3 [8003]</label>
                                     <input type="text" class="form-input" id="customUrl8003" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label style="font-size: 0.75rem; color: var(--text-muted);">CosyVoice 2 [8006]</label>
+                                    <input type="text" class="form-input" id="customUrl8006" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0.75rem;">
                                     <label style="font-size: 0.75rem; color: var(--text-muted);">Qwen TTS [8005]</label>
@@ -1974,11 +2100,21 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 
                 // Active State variables
                 this.selectedModel = 'index_main';
+                this.activePlayerModelKey = null; // Track current loaded player model key
                 this.activeSubmodes = {
                     index: 'preset',
                     cosyvoice: 'sft'
                 };
                 
+                // Name masking configuration for BD demos
+                this.nameMapping = {
+                    'index_main': { original: 'IndexTTS (Main)', masked: '模型3' },
+                    'qwen': { original: 'Qwen TTS', masked: '模型1' },
+                    'index_tw': { original: 'IndexTTS (TW)', masked: '台語帶國語模型6' },
+                    'cosyvoice': { original: 'CosyVoice 3', masked: '台語模型4' },
+                    'cosyvoice2': { original: 'CosyVoice 2', masked: '台語模型2' }
+                };
+
                 // Connection Configurations
                 this.config = {
                     host: '',
@@ -1987,6 +2123,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                         index_main: '',
                         index_tw: '',
                         cosyvoice: '',
+                        cosyvoice2: '',
                         qwen: ''
                     }
                 };
@@ -2052,11 +2189,13 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 const defaultMainUrl = isHttps ? 'https://tts.create360.ai/8001' : `http://${this.config.host}:8001`;
                 const defaultTwUrl = isHttps ? 'https://tts.create360.ai/8002' : `http://${this.config.host}:8002`;
                 const defaultCosyUrl = isHttps ? 'https://tts.create360.ai/8003' : `http://${this.config.host}:8003`;
+                const defaultCosy2Url = isHttps ? 'https://tts.create360.ai/8006' : `http://${this.config.host}:8006`;
                 const defaultQwenUrl = isHttps ? 'https://tts.create360.ai/8005' : `http://${this.config.host}:8005`;
 
                 this.config.urls.index_main = localStorage.getItem('tts_url_8001') || defaultMainUrl;
                 this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || defaultTwUrl;
                 this.config.urls.cosyvoice = localStorage.getItem('tts_url_8003') || defaultCosyUrl;
+                this.config.urls.cosyvoice2 = localStorage.getItem('tts_url_8006') || defaultCosy2Url;
                 this.config.urls.qwen = localStorage.getItem('tts_url_8005') || defaultQwenUrl;
 
                 // Update settings UI fields
@@ -2065,6 +2204,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 document.getElementById('customUrl8001').value = this.config.urls.index_main;
                 document.getElementById('customUrl8002').value = this.config.urls.index_tw;
                 document.getElementById('customUrl8003').value = this.config.urls.cosyvoice;
+                document.getElementById('customUrl8006').value = this.config.urls.cosyvoice2;
                 document.getElementById('customUrl8005').value = this.config.urls.qwen;
             }
 
@@ -2075,6 +2215,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 this.config.urls.index_main = document.getElementById('customUrl8001').value.trim() || `http://${this.config.host}:8001`;
                 this.config.urls.index_tw = document.getElementById('customUrl8002').value.trim() || `http://${this.config.host}:8002`;
                 this.config.urls.cosyvoice = document.getElementById('customUrl8003').value.trim() || `http://${this.config.host}:8003`;
+                this.config.urls.cosyvoice2 = document.getElementById('customUrl8006').value.trim() || `http://${this.config.host}:8006`;
                 this.config.urls.qwen = document.getElementById('customUrl8005').value.trim() || `http://${this.config.host}:8005`;
 
                 localStorage.setItem('tts_host', this.config.host);
@@ -2082,6 +2223,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 localStorage.setItem('tts_url_8001', this.config.urls.index_main);
                 localStorage.setItem('tts_url_8002', this.config.urls.index_tw);
                 localStorage.setItem('tts_url_8003', this.config.urls.cosyvoice);
+                localStorage.setItem('tts_url_8006', this.config.urls.cosyvoice2);
                 localStorage.setItem('tts_url_8005', this.config.urls.qwen);
 
                 this.showToast('success', '設定已儲存', 'API 連線配置更新成功，開始重新檢測狀態...');
@@ -2097,6 +2239,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 localStorage.removeItem('tts_url_8001');
                 localStorage.removeItem('tts_url_8002');
                 localStorage.removeItem('tts_url_8003');
+                localStorage.removeItem('tts_url_8006');
                 localStorage.removeItem('tts_url_8005');
                 this.loadSettings();
                 this.showToast('success', '設定已重設', '已還原至預設的 API 端口配置');
@@ -2162,7 +2305,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 });
 
                 // Settings change events
-                const settingsInputs = ['settingHost', 'settingProxy', 'customUrl8001', 'customUrl8002', 'customUrl8003', 'customUrl8005'];
+                const settingsInputs = ['settingHost', 'settingProxy', 'customUrl8001', 'customUrl8002', 'customUrl8003', 'customUrl8006', 'customUrl8005'];
                 settingsInputs.forEach(id => {
                     document.getElementById(id).addEventListener('change', () => this.saveSettings());
                 });
@@ -2183,6 +2326,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 document.querySelectorAll('.sub-mode-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const parentGroup = e.target.closest('.model-options-group');
+                        if (!parentGroup) return;
                         parentGroup.querySelectorAll('.sub-mode-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         
@@ -2240,6 +2384,14 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     document.getElementById('cosySeed').value = Math.random() > 0.1 ? rand : -1;
                 });
 
+                document.getElementById('cosy2RandomSeedBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('cosy2Seed').value = Math.floor(Math.random() * 1000000);
+                });
+
+                // Mask Names Toggle Button
+                document.getElementById('btnMaskNames').addEventListener('change', () => this.updateModelNames());
+
                 // Upload events for IndexTTS
                 this.setupDragAndDrop('indexUploadZone', 'indexActiveFileCard', 'indexFileName', 'indexFileSize', 'index', 'indexRemoveFile');
                 // Upload events for CosyVoice 3
@@ -2277,11 +2429,43 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 document.getElementById('charCount').textContent = `${text.length} / 500 字`;
             }
 
+            updateModelNames() {
+                const isMasked = document.getElementById('btnMaskNames').checked;
+                
+                // 1. Update model selector cards
+                document.querySelectorAll('.model-card').forEach(card => {
+                    const modelKey = card.dataset.model;
+                    const titleEl = card.querySelector('.model-card-title');
+                    if (titleEl && this.nameMapping[modelKey]) {
+                        titleEl.textContent = isMasked ? this.nameMapping[modelKey].masked : this.nameMapping[modelKey].original;
+                    }
+                });
+
+                // 2. Update top service status cards
+                document.querySelectorAll('.status-card').forEach(card => {
+                    const serviceKey = card.dataset.service;
+                    const nameEl = card.querySelector('.status-name');
+                    if (nameEl && this.nameMapping[serviceKey]) {
+                        nameEl.textContent = isMasked ? this.nameMapping[serviceKey].masked : this.nameMapping[serviceKey].original;
+                    }
+                });
+
+                // 3. Update active player model name if loaded
+                if (this.activePlayerModelKey && this.nameMapping[this.activePlayerModelKey]) {
+                    const key = this.activePlayerModelKey;
+                    document.getElementById('playerInfoModel').textContent = isMasked ? this.nameMapping[key].masked : this.nameMapping[key].original;
+                }
+
+                // 4. Update history log list dynamically
+                this.renderHistory();
+            }
+
             updateModelOptionsUI() {
                 document.getElementById('options-index').classList.toggle('hidden', 
                     this.selectedModel !== 'index_main' && this.selectedModel !== 'index_tw');
                 document.getElementById('options-qwen').classList.toggle('hidden', this.selectedModel !== 'qwen');
                 document.getElementById('options-cosyvoice').classList.toggle('hidden', this.selectedModel !== 'cosyvoice');
+                document.getElementById('options-cosyvoice2').classList.toggle('hidden', this.selectedModel !== 'cosyvoice2');
                 
                 // Auto switch voice select list when switching index_main / index_tw
                 if (this.selectedModel === 'index_main') {
@@ -2367,6 +2551,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 this.checkServiceHealth('index_main', '/health');
                 this.checkServiceHealth('index_tw', '/health');
                 this.checkServiceHealth('cosyvoice', '/health');
+                this.checkServiceHealth('cosyvoice2', '/voices');
                 this.checkServiceHealth('qwen', '/health');
             }
 
@@ -2688,6 +2873,24 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                                 speed: speed
                             })
                         };
+                    } else if (this.selectedModel === 'cosyvoice2') {
+                        modelName = 'CosyVoice 2';
+                        endpoint = this.getEndpoint('cosyvoice2', '/inference_with_voice_config');
+                        const spk = document.getElementById('cosy2Speaker').value;
+                        const seed = parseInt(document.getElementById('cosy2Seed').value) || 0;
+                        
+                        const displayVoiceName = spk === 'gentle_female' ? '溫柔女聲' : '沉穩男聲';
+                        voiceName = `${displayVoiceName} [CosyVoice 2]`;
+
+                        const formData = new FormData();
+                        formData.append('tts_text', text);
+                        formData.append('voice_id', spk);
+                        formData.append('original_text', text);
+
+                        fetchOptions = {
+                            method: 'POST',
+                            body: formData
+                        };
                     }
 
                     // SEND REQUEST
@@ -2706,7 +2909,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     this.showToast('success', '合成完成', `音訊成功產生 (${(audioBlob.size/1024).toFixed(1)} KB)`);
                     
                     // Handle and visualize audio
-                    await this.loadAudioToPlayer(audioBlob, text, modelName, voiceName);
+                    await this.loadAudioToPlayer(audioBlob, text, modelName, voiceName, this.selectedModel);
 
                     // Save to history
                     const historyItem = {
@@ -2714,6 +2917,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                         timestamp: Date.now(),
                         model: modelName,
                         voice: voiceName,
+                        modelKey: this.selectedModel,
                         text: text,
                         audioData: audioBlob
                     };
@@ -2733,7 +2937,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
             }
 
             // --- AUDIO PLAYBACK CONTROL ---
-            async loadAudioToPlayer(blob, text, model, voice) {
+            async loadAudioToPlayer(blob, text, model, voice, modelKey = null) {
                 // Stop current playing
                 this.stopPlayback();
 
@@ -2741,9 +2945,25 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 const audioUrl = URL.createObjectURL(blob);
                 this.audioElement.src = audioUrl;
 
+                this.activePlayerModelKey = modelKey || this.selectedModel;
+
+                // Determine display model name dynamically based on mask state
+                const isMasked = document.getElementById('btnMaskNames').checked;
+                let displayModel = model;
+                let displayVoice = voice;
+                
+                const activeKey = this.activePlayerModelKey;
+                if (activeKey && this.nameMapping[activeKey]) {
+                    displayModel = isMasked ? this.nameMapping[activeKey].masked : this.nameMapping[activeKey].original;
+                    // Replace voice label model name
+                    const origModel = this.nameMapping[activeKey].original;
+                    const maskedModel = this.nameMapping[activeKey].masked;
+                    displayVoice = isMasked ? voice.replace(origModel, maskedModel) : voice.replace(maskedModel, origModel);
+                }
+
                 // Update UI titles
                 document.getElementById('playerCard').style.display = 'block';
-                document.getElementById('playerInfoModel').textContent = model;
+                document.getElementById('playerInfoModel').textContent = displayModel;
                 document.getElementById('playerInfoText').textContent = `"${text}"`;
                 document.getElementById('playerInfoText').title = text;
 
@@ -3105,7 +3325,16 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     const itemEl = document.querySelector(`.history-item[data-id="${id}"]`);
                     if (itemEl) itemEl.classList.add('playing');
                     
-                    this.loadAudioToPlayer(item.audioData, item.text, item.model, item.voice);
+                    let modelKey = item.modelKey;
+                    if (!modelKey) {
+                        // Fallback heuristics for old history items
+                        if (item.model.includes('TW') || item.model.includes('台語帶國語')) modelKey = 'index_tw';
+                        else if (item.model.includes('CosyVoice 3') || item.model.includes('台語模型4')) modelKey = 'cosyvoice';
+                        else if (item.model.includes('CosyVoice 2') || item.model.includes('台語模型2')) modelKey = 'cosyvoice2';
+                        else if (item.model.includes('Qwen') || item.model.includes('模型1')) modelKey = 'qwen';
+                        else modelKey = 'index_main';
+                    }
+                    this.loadAudioToPlayer(item.audioData, item.text, item.model, item.voice, modelKey);
                 }
             }
 
