@@ -1585,53 +1585,53 @@
                                 </div>
                             </h3>
                             
-                            <div class="model-category-header">國語 (台灣特色腔調)</div>
+                            <div class="model-category-header">台語 (微帶有些許國語)</div>
                             <div class="model-selector-grid">
-                                <div class="model-card selected" data-model="index_main">
+                                <div class="model-card selected" data-model="cosyvoice2">
                                     <div class="model-icon">
                                         <span>1</span>
                                     </div>
-                                    <div class="model-card-title">IndexTTS (Main)</div>
-                                    <div class="model-card-desc">高音質國語主模型，支援多種預設中文音色與上傳複製</div>
+                                    <div class="model-card-title">CosyVoice 2</div>
+                                    <div class="model-card-desc">教育部標準台語 帶抑揚頓挫 (精調純台語語音模型)</div>
                                 </div>
-                                <div class="model-card" data-model="qwen">
-                                    <div class="model-icon">
-                                        <span>2</span>
-                                    </div>
-                                    <div class="model-card-title">Qwen TTS</div>
-                                    <div class="model-card-desc">基於通義千問的多語言大模型，自然度高</div>
-                                </div>
-                            </div>
-                            
-                            <div class="model-category-header" style="margin-top: 1rem;">台語 (微帶有些許國語)</div>
-                            <div class="model-selector-grid">
                                 <div class="model-card" data-model="index_tw">
                                     <div class="model-icon">
-                                        <span>3</span>
+                                        <span>2</span>
                                     </div>
                                     <div class="model-card-title">IndexTTS (TW)</div>
                                     <div class="model-card-desc">專為台灣腔調與閩南話優化之語音模型</div>
                                 </div>
                                 <div class="model-card" data-model="cosyvoice">
                                     <div class="model-icon">
-                                        <span>4</span>
+                                        <span>3</span>
                                     </div>
                                     <div class="model-card-title">CosyVoice 3</div>
                                     <div class="model-card-desc">阿里開源最新語音複製模型，支援零樣本極速克隆</div>
                                 </div>
-                                <div class="model-card" data-model="cosyvoice2">
+                            </div>
+                            
+                            <div class="model-category-header" style="margin-top: 1rem;">國語 (台灣特色腔調)</div>
+                            <div class="model-selector-grid">
+                                <div class="model-card" data-model="index_main">
+                                    <div class="model-icon">
+                                        <span>4</span>
+                                    </div>
+                                    <div class="model-card-title">IndexTTS (Main)</div>
+                                    <div class="model-card-desc">高音質國語主模型，支援多種預設中文音色與上傳複製</div>
+                                </div>
+                                <div class="model-card" data-model="qwen">
                                     <div class="model-icon">
                                         <span>5</span>
                                     </div>
-                                    <div class="model-card-title">CosyVoice 2</div>
-                                    <div class="model-card-desc">教育部資料集精調之 CosyVoice 2 語音模型</div>
+                                    <div class="model-card-title">Qwen TTS</div>
+                                    <div class="model-card-desc">基於通義千問的多語言大模型，自然度高</div>
                                 </div>
                             </div>
 
                             <!-- DYNAMIC MODEL SUB-MODES & OPTIONS -->
                             
                             <!-- IndexTTS (Main & TW) Options -->
-                            <div id="options-index" class="model-options-group">
+                            <div id="options-index" class="model-options-group hidden">
                                 <div class="sub-mode-toggle">
                                     <button class="sub-mode-btn active" data-submode="preset">預設音色</button>
                                     <button class="sub-mode-btn" data-submode="clone">語音克隆 (tts_upload)</button>
@@ -1769,14 +1769,14 @@
                             </div>
 
                             <!-- CosyVoice 2 Options -->
-                            <div id="options-cosyvoice2" class="model-options-group hidden">
+                            <div id="options-cosyvoice2" class="model-options-group">
                                 <div class="form-group">
                                     <label class="form-label" for="cosy2Speaker">選擇角色 (Speaker)</label>
                                     <select class="form-select" id="cosy2Speaker">
                                         <option value="gentle_female">溫柔女聲 (gentle_female)</option>
                                         <option value="professional_male">沉穩男聲 (professional_male)</option>
                                     </select>
-                                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">此為教育部台語資料集精調之極速克隆音色。</span>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">此為精調純台語音色，具備極佳的抑揚頓挫。</span>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label" for="cosy2Seed">隨機種子 (Seed)</label>
@@ -2226,7 +2226,7 @@ curl https://tts.create360.ai/8006/voices</div>
                 this.historyItems = [];
                 
                 // Active State variables
-                this.selectedModel = 'index_main';
+                this.selectedModel = 'cosyvoice2';
                 this.activePlayerModelKey = null; // Track current loaded player model key
                 this.activeSubmodes = {
                     index: 'preset',
@@ -2235,11 +2235,26 @@ curl https://tts.create360.ai/8006/voices</div>
                 
                 // Name masking configuration for BD demos
                 this.nameMapping = {
-                    'index_main': { original: 'IndexTTS (Main)', masked: '模型3' },
-                    'qwen': { original: 'Qwen TTS', masked: '模型1' },
-                    'index_tw': { original: 'IndexTTS (TW)', masked: '台語帶國語模型6' },
-                    'cosyvoice': { original: 'CosyVoice 3', masked: '台語模型4' },
-                    'cosyvoice2': { original: 'CosyVoice 2', masked: '台語模型2' }
+                    'index_main': { 
+                        original: { name: 'IndexTTS (Main)', desc: '高音質國語主模型，支援多種預設中文音色與上傳複製' }, 
+                        masked: { name: '模型3', desc: '名人或三立主播訓練' } 
+                    },
+                    'qwen': { 
+                        original: { name: 'Qwen TTS', desc: '基於通義千問的多語言大模型，自然度高' }, 
+                        masked: { name: '模型1', desc: '台北同事音調訓練' } 
+                    },
+                    'index_tw': { 
+                        original: { name: 'IndexTTS (TW)', desc: '專為台灣腔調與閩南話優化之語音模型' }, 
+                        masked: { name: '台語帶國語模型6', desc: '大量三立台劇訓練帶特色' } 
+                    },
+                    'cosyvoice': { 
+                        original: { name: 'CosyVoice 3', desc: '阿里開源最新語音複製模型，支援零樣本極速克隆' }, 
+                        masked: { name: '台語模型4', desc: '大量三立戲劇訓練帶情感' } 
+                    },
+                    'cosyvoice2': { 
+                        original: { name: 'CosyVoice 2', desc: '教育部標準台語 帶抑揚頓挫 (精調純台語語音模型)' }, 
+                        masked: { name: '台語模型2', desc: '精調純台語' } 
+                    }
                 };
 
                 // Model Help definitions for both normal & masked modes (Taiwanese first!)
@@ -2338,6 +2353,9 @@ curl https://tts.create360.ai/8006/voices</div>
                     this.fetchIndexVoices('index_tw');
                     this.fetchCosyVoiceMetadata();
                 }, 1000);
+
+                // Update options panel to match default selected model
+                this.updateModelOptionsUI();
             }
 
             loadSettings() {
@@ -2610,8 +2628,14 @@ curl https://tts.create360.ai/8006/voices</div>
                 document.querySelectorAll('.model-card').forEach(card => {
                     const modelKey = card.dataset.model;
                     const titleEl = card.querySelector('.model-card-title');
-                    if (titleEl && this.nameMapping[modelKey]) {
-                        titleEl.textContent = isMasked ? this.nameMapping[modelKey].masked : this.nameMapping[modelKey].original;
+                    const descEl = card.querySelector('.model-card-desc');
+                    if (this.nameMapping[modelKey]) {
+                        if (titleEl) {
+                            titleEl.textContent = isMasked ? this.nameMapping[modelKey].masked.name : this.nameMapping[modelKey].original.name;
+                        }
+                        if (descEl) {
+                            descEl.textContent = isMasked ? this.nameMapping[modelKey].masked.desc : this.nameMapping[modelKey].original.desc;
+                        }
                     }
                 });
 
@@ -2620,14 +2644,14 @@ curl https://tts.create360.ai/8006/voices</div>
                     const serviceKey = card.dataset.service;
                     const nameEl = card.querySelector('.status-name');
                     if (nameEl && this.nameMapping[serviceKey]) {
-                        nameEl.textContent = isMasked ? this.nameMapping[serviceKey].masked : this.nameMapping[serviceKey].original;
+                        nameEl.textContent = isMasked ? this.nameMapping[serviceKey].masked.name : this.nameMapping[serviceKey].original.name;
                     }
                 });
 
                 // 3. Update active player model name if loaded
                 if (this.activePlayerModelKey && this.nameMapping[this.activePlayerModelKey]) {
                     const key = this.activePlayerModelKey;
-                    document.getElementById('playerInfoModel').textContent = isMasked ? this.nameMapping[key].masked : this.nameMapping[key].original;
+                    document.getElementById('playerInfoModel').textContent = isMasked ? this.nameMapping[key].masked.name : this.nameMapping[key].original.name;
                 }
 
                 // 4. Toggle status-grid visibility based on mask state
@@ -3180,10 +3204,10 @@ curl https://tts.create360.ai/8006/voices</div>
                 
                 const activeKey = this.activePlayerModelKey;
                 if (activeKey && this.nameMapping[activeKey]) {
-                    displayModel = isMasked ? this.nameMapping[activeKey].masked : this.nameMapping[activeKey].original;
+                    displayModel = isMasked ? this.nameMapping[activeKey].masked.name : this.nameMapping[activeKey].original.name;
                     // Replace voice label model name
-                    const origModel = this.nameMapping[activeKey].original;
-                    const maskedModel = this.nameMapping[activeKey].masked;
+                    const origModel = this.nameMapping[activeKey].original.name;
+                    const maskedModel = this.nameMapping[activeKey].masked.name;
                     displayVoice = isMasked ? voice.replace(origModel, maskedModel) : voice.replace(maskedModel, origModel);
                 }
 
@@ -3513,14 +3537,14 @@ curl https://tts.create360.ai/8006/voices</div>
                     }
 
                     if (isMasked && modelKey && this.nameMapping[modelKey]) {
-                        displayModel = this.nameMapping[modelKey].masked;
-                        const origModel = this.nameMapping[modelKey].original;
-                        const maskedModel = this.nameMapping[modelKey].masked;
+                        displayModel = this.nameMapping[modelKey].masked.name;
+                        const origModel = this.nameMapping[modelKey].original.name;
+                        const maskedModel = this.nameMapping[modelKey].masked.name;
                         displayVoice = displayVoice.replace(origModel, maskedModel);
                     } else if (!isMasked && modelKey && this.nameMapping[modelKey]) {
-                        displayModel = this.nameMapping[modelKey].original;
-                        const origModel = this.nameMapping[modelKey].original;
-                        const maskedModel = this.nameMapping[modelKey].masked;
+                        displayModel = this.nameMapping[modelKey].original.name;
+                        const origModel = this.nameMapping[modelKey].original.name;
+                        const maskedModel = this.nameMapping[modelKey].masked.name;
                         displayVoice = displayVoice.replace(maskedModel, origModel);
                     }
 
