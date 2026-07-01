@@ -127,6 +127,45 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition-smooth);
+        }
+
+        .brand:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        /* --- BREADCRUMBS --- */
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            opacity: 0.5;
+        }
+
+        .breadcrumb-active {
+            color: var(--text-main);
+            font-weight: 500;
         }
 
         .brand-logo {
@@ -315,11 +354,18 @@
         /* --- LAYOUT COLUMNS --- */
         .workspace-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 2rem;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
         }
 
-        @media (max-width: 968px) {
+        @media (max-width: 1200px) {
+            .workspace-grid {
+                grid-template-columns: 1fr 1.2fr;
+            }
+        }
+
+        @media (max-width: 768px) {
             .workspace-grid {
                 grid-template-columns: 1fr;
             }
@@ -1472,10 +1518,10 @@
             <div class="tab-content-panel active" id="panel-generator">
                 <div class="workspace-grid">
                     
-                    <!-- Left: Control & Generator -->
+                    <!-- Column 1: Text Input Area -->
                     <div>
                         <!-- TEXT INPUT AREA -->
-                        <div class="card">
+                        <div class="card" style="margin-bottom: 0;">
                             <h3 class="card-header-title">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 20h9"/>
@@ -1514,9 +1560,12 @@
                                 </button>
                             </div>
                         </div>
+                    </div> <!-- End Column 1 -->
 
+                    <!-- Column 2: Model Selector & Parameters -->
+                    <div>
                         <!-- MODEL SELECTOR -->
-                        <div class="card">
+                        <div class="card" style="margin-bottom: 0;">
                             <h3 class="card-header-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1772,9 +1821,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> <!-- End Column 2 -->
 
-                    <!-- Right: Preview Player & History -->
+                    <!-- Column 3: Preview Player & History -->
                     <div>
                         <!-- PLAYBACK CARD -->
                         <div class="player-card" id="playerCard">
@@ -1860,9 +1909,15 @@
                 </div>
             </div>
 
-            <!-- PANEL: SETTINGS -->
             <div class="tab-content-panel" id="panel-settings">
                 <div class="card">
+                    <!-- Breadcrumbs -->
+                    <div class="breadcrumb-nav">
+                        <span class="breadcrumb-item" onclick="app.switchTab('generator')">🏠 首頁</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-active">API 連線與代理設定</span>
+                    </div>
+                    
                     <h3 class="card-header-title">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
@@ -1935,9 +1990,15 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 </div>
             </div>
 
-            <!-- PANEL: HELP -->
             <div class="tab-content-panel" id="panel-help">
                 <div class="card">
+                    <!-- Breadcrumbs -->
+                    <div class="breadcrumb-nav">
+                        <span class="breadcrumb-item" onclick="app.switchTab('generator')">🏠 首頁</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-active">語音模型指南與對照表</span>
+                    </div>
+                    
                     <h3 class="card-header-title">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="4" y1="9" x2="20" y2="9"/>
@@ -1948,27 +2009,13 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                         語音模型指南與對照表
                     </h3>
 
-                    <div class="help-section">
-                        <h4>1. IndexTTS 主模型 (8001 / 8002)</h4>
-                        <p>基於 VLLM 推理加速技術。預設音色庫十分豐富，生成速度最快。8002 專門為閩南腔及台灣國語優化，發音更具在地親切感。</p>
-                        <p><strong>語音複製 (tts_upload):</strong> 支援上傳包含人聲的聲音檔，並指定 Seed 種子，模型將極速學習該聲音特徵來發音。</p>
+                    
+                    <div id="helpModelList">
+                        <!-- Dynamically populated in JavaScript -->
                     </div>
 
-                    <div class="help-section">
-                        <h4>2. CosyVoice 3 大模型 (8003)</h4>
-                        <p>阿里開源的最新高自然度語音複製框架。特色是強大的零樣本 (Zero-Shot) 克隆，僅需 3 秒以上的參考音檔即可產出高品質的擬真複製語音。</p>
-                        <p><strong>推理模式：</strong>
-                            SFT 模式（預訓練）需要模型預先封裝的音色名稱；而 Zero-Shot（複製）模式需要上傳參考語音並給予對應的文字逐字稿 (Prompt Text)，以達到最極致的聲音克隆表現。
-                        </p>
-                    </div>
-
-                    <div class="help-section">
-                        <h4>3. Qwen TTS 大模型 (8005)</h4>
-                        <p>阿里 Qwen 家族研發的多語言語音合成大模型。自然度高，且對多國語言（中、英、日、韓、法、德等）的混合發音擁有優秀的表現力。</p>
-                    </div>
-
-                    <div class="help-section">
-                        <h4>API 接口總覽</h4>
+                    <div class="help-section" style="margin-top: 2rem; border-top: 1px dashed var(--border-color); padding-top: 1.5rem;">
+                        <h4 style="margin-bottom: 0.75rem; color: var(--text-main); font-size: 0.95rem; font-weight: 600;">API 接口總覽</h4>
                         <table class="help-table">
                             <thead>
                                 <tr>
@@ -1992,6 +2039,11 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                                     <td>CosyVoice 3</td>
                                     <td>POST /tts</td>
                                     <td>FormData: <code>text, mode, speed, seed, speaker, prompt_audio, prompt_text</code></td>
+                                </tr>
+                                <tr>
+                                    <td>CosyVoice 2</td>
+                                    <td>POST /inference_with_voice_config</td>
+                                    <td>FormData: <code>tts_text, voice_id, original_text</code></td>
                                 </tr>
                                 <tr>
                                     <td>Qwen TTS</td>
@@ -2187,6 +2239,44 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                     'cosyvoice2': { original: 'CosyVoice 2', masked: '台語模型2' }
                 };
 
+                // Model Help definitions for both normal & masked modes (Taiwanese first!)
+                this.helpModels = {
+                    masked: [
+                        {
+                            category: '台語 (微帶有些許國語)',
+                            items: [
+                                { name: '台語帶國語模型6', desc: '大量三立台劇訓練帶特色', port: '8002' },
+                                { name: '台語模型4', desc: '大量三立戲劇訓練帶情感', port: '8003' },
+                                { name: '台語模型2', desc: '教育部標準台語 帶抑揚頓挫', port: '8006' }
+                            ]
+                        },
+                        {
+                            category: '國語 (台灣特色腔調)',
+                            items: [
+                                { name: '模型3', desc: '名人或三立主播訓練', port: '8001' },
+                                { name: '模型1', desc: '台北同事音調訓練', port: '8005' }
+                            ]
+                        }
+                    ],
+                    original: [
+                        {
+                            category: '台語 (微帶有些許國語)',
+                            items: [
+                                { name: 'IndexTTS (TW)', desc: '大量三立台劇訓練帶特色 (專為台灣腔調與閩南話優化之語音模型)', port: '8002' },
+                                { name: 'CosyVoice 3', desc: '大量三立戲劇訓練帶情感 (阿里開源最新語音複製模型，支援零樣本克隆)', port: '8003' },
+                                { name: 'CosyVoice 2', desc: '教育部標準台語 帶抑揚頓挫 (教育部資料集精調之 CosyVoice 2 語音模型)', port: '8006' }
+                            ]
+                        },
+                        {
+                            category: '國語 (台灣特色腔調)',
+                            items: [
+                                { name: 'IndexTTS (Main)', desc: '名人或三立主播訓練 (高音質國語主模型，支援多種預設中文音色與上傳複製)', port: '8001' },
+                                { name: 'Qwen TTS', desc: '台北同事音調訓練 (基於通義千問的多語言大模型，自然度高)', port: '8005' }
+                            ]
+                        }
+                    ]
+                };
+
                 // Connection Configurations
                 this.config = {
                     host: '',
@@ -2374,11 +2464,14 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 // Navigation tabs switcher
                 document.querySelectorAll('.nav-tabs .nav-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
-                        document.querySelectorAll('.nav-tabs .nav-btn').forEach(b => b.classList.remove('active'));
-                        document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
-                        
-                        btn.classList.add('active');
-                        document.getElementById(`panel-${btn.dataset.tab}`).classList.add('active');
+                        this.switchTab(btn.dataset.tab);
+                    });
+                });
+
+                // Brand logo click to go home (generator tab)
+                document.querySelectorAll('.brand').forEach(brandEl => {
+                    brandEl.addEventListener('click', () => {
+                        this.switchTab('generator');
                     });
                 });
 
@@ -2542,6 +2635,52 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
                 // 5. Update history log list dynamically
                 this.renderHistory();
+
+                // 6. Update help model list dynamically
+                this.renderHelpPanel();
+            }
+
+            switchTab(tabId) {
+                document.querySelectorAll('.nav-tabs .nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
+                
+                const btn = document.querySelector(`.nav-tabs .nav-btn[data-tab="${tabId}"]`);
+                if (btn) btn.classList.add('active');
+                
+                const panel = document.getElementById(`panel-${tabId}`);
+                if (panel) panel.classList.add('active');
+            }
+
+            renderHelpPanel() {
+                const container = document.getElementById('helpModelList');
+                if (!container) return;
+
+                const isMasked = document.getElementById('btnMaskNames') ? document.getElementById('btnMaskNames').checked : true;
+                const data = isMasked ? this.helpModels.masked : this.helpModels.original;
+
+                let html = '';
+                data.forEach((cat, catIdx) => {
+                    html += `
+                        <div style="margin-bottom: ${catIdx === 0 ? '1.5rem' : '0'};">
+                            <div class="model-category-header" style="font-size: 0.85rem; margin-bottom: 0.75rem; margin-top: ${catIdx > 0 ? '1.5rem' : '0'};">${cat.category}</div>
+                            <div class="model-selector-grid">
+                    `;
+                    cat.items.forEach(item => {
+                        html += `
+                                <div class="help-section" style="margin-bottom: 0; padding: 1rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.25rem;">
+                                    <h4 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; color: var(--text-main); font-size: 0.85rem; font-weight: 600;">
+                                        <span>${item.name} <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: normal; margin-left: 0.5rem;">(Port ${item.port})</span></span>
+                                    </h4>
+                                    <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0;">${item.desc}</p>
+                                </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
             }
 
             updateModelOptionsUI() {
