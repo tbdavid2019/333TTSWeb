@@ -3,70 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>360 TTS Multiverse Hub</title>
+    <title>David TTS Atelier</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- DESIGN SYSTEM & TOKENS --- */
         :root {
-            /* Default: Catppuccin Frappé (Dark Mode) */
-            --bg-base: #303446;
-            --bg-surface: #292c3c;
-            --bg-surface-elevated: #414559;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-color-hover: rgba(255, 255, 255, 0.15);
-            
-            --primary: #ca9ee6; /* Mauve */
-            --primary-glow: rgba(202, 158, 230, 0.05);
-            --secondary: #8caaee; /* Blue */
-            --secondary-glow: rgba(140, 170, 238, 0.05);
-            
-            --text-main: #c6d0f5; /* Text */
-            --text-muted: #a5adce; /* Subtext0 */
-            --text-dark: #737994; /* Overlay0 */
-            
-            --success: #a6d189; /* Green */
-            --warning: #e5c890; /* Yellow */
-            --error: #e78284; /* Red */
-            
-            --bg-header: rgba(48, 52, 70, 0.75);
-            
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            
-            --font-display: 'Outfit', 'Inter', -apple-system, sans-serif;
-            --font-sans: 'Inter', -apple-system, sans-serif;
-            
+            --bg-base: #f4efe7;
+            --bg-surface: rgba(255, 249, 240, 0.8);
+            --bg-surface-elevated: rgba(255, 252, 247, 0.95);
+            --border-color: rgba(78, 57, 44, 0.12);
+            --border-color-hover: rgba(78, 57, 44, 0.26);
+
+            --primary: #a45a3f;
+            --primary-glow: rgba(164, 90, 63, 0.16);
+            --secondary: #2f5d6c;
+            --secondary-glow: rgba(47, 93, 108, 0.14);
+
+            --text-main: #231915;
+            --text-muted: #6e6258;
+            --text-dark: #aa9a8b;
+
+            --success: #4f7a55;
+            --warning: #b78332;
+            --error: #b55647;
+
+            --bg-header: rgba(255, 249, 240, 0.72);
+
+            --radius-sm: 12px;
+            --radius-md: 22px;
+            --radius-lg: 32px;
+
+            --font-display: 'Cormorant Garamond', 'Noto Sans TC', serif;
+            --font-sans: 'Manrope', 'Noto Sans TC', -apple-system, sans-serif;
+
             --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-fast: all 0.15s ease;
         }
 
-        /* Light Mode: Catppuccin Latte */
+        /* Alternate theme */
         [data-theme="latte"] {
-            --bg-base: #eff1f5;
-            --bg-surface: #e6e9ef;
-            --bg-surface-elevated: #ccd0da;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --border-color-hover: rgba(0, 0, 0, 0.15);
-            
-            --primary: #8839ef; /* Mauve */
-            --primary-glow: rgba(136, 57, 239, 0.05);
-            --secondary: #1e66f5; /* Blue */
-            --secondary-glow: rgba(30, 102, 245, 0.05);
-            
-            --text-main: #4c4f69; /* Text */
-            --text-muted: #6c6f85; /* Subtext0 */
-            --text-dark: #9ca0b0; /* Overlay0 */
-            
-            --success: #40a02b; /* Green */
-            --warning: #df8e1d; /* Yellow */
-            --error: #d20f39; /* Red */
-            
-            --bg-header: rgba(239, 241, 245, 0.75);
+            --bg-base: #1c1614;
+            --bg-surface: rgba(42, 33, 29, 0.82);
+            --bg-surface-elevated: rgba(57, 45, 39, 0.94);
+            --border-color: rgba(240, 223, 207, 0.12);
+            --border-color-hover: rgba(240, 223, 207, 0.22);
+
+            --primary: #d98e63;
+            --primary-glow: rgba(217, 142, 99, 0.16);
+            --secondary: #82b8c0;
+            --secondary-glow: rgba(130, 184, 192, 0.12);
+
+            --text-main: #f6eee6;
+            --text-muted: #c2b4a8;
+            --text-dark: #8f8076;
+
+            --success: #86b18b;
+            --warning: #e0b164;
+            --error: #e28b7d;
+
+            --bg-header: rgba(28, 22, 20, 0.72);
         }
 
         /* --- BASIC RESET --- */
@@ -84,8 +83,22 @@
             line-height: 1.6;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, var(--primary-glow) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, var(--secondary-glow) 0%, transparent 40%);
+                radial-gradient(circle at 10% 10%, var(--primary-glow) 0%, transparent 34%),
+                radial-gradient(circle at 85% 18%, var(--secondary-glow) 0%, transparent 28%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent 26%);
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(130deg, rgba(255, 255, 255, 0.24), transparent 40%),
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.18) 0, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.04) 0, transparent 24%);
+            opacity: 0.8;
         }
 
         a {
@@ -99,9 +112,11 @@
 
         /* --- APPLAYOUT --- */
         .app-container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 1.25rem 1.5rem 4rem 1.5rem;
+            padding: 1.5rem 1.5rem 4rem 1.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* --- HEADER & BRANDING --- */
@@ -112,14 +127,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2.5rem;
-            padding: 0.75rem 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.9rem 1.2rem;
             background: var(--bg-header);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 999px;
+            box-shadow: 0 16px 40px rgba(47, 30, 20, 0.12);
             transition: var(--transition-smooth);
         }
 
@@ -171,12 +186,12 @@
         .brand-logo {
             width: 42px;
             height: 42px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: var(--radius-sm);
+            background: linear-gradient(145deg, var(--primary), #c48955);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px var(--primary-glow);
+            box-shadow: 0 14px 22px rgba(164, 90, 63, 0.2);
         }
 
         .brand-logo svg {
@@ -187,20 +202,29 @@
 
         .brand-title {
             font-family: var(--font-display);
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(to right, #ffffff, #d1d5db);
+            background: linear-gradient(120deg, var(--text-main), var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+            letter-spacing: 0.02em;
+            line-height: 0.9;
+        }
+
+        .brand-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-top: 0.1rem;
         }
 
         /* --- NAVIGATION TABS --- */
         .nav-tabs {
             display: flex;
-            background: var(--bg-surface);
+            background: rgba(255, 255, 255, 0.18);
             padding: 0.35rem;
-            border-radius: 30px;
+            border-radius: 999px;
             border: 1px solid var(--border-color);
             gap: 0.25rem;
         }
@@ -230,9 +254,112 @@
         }
 
         .nav-btn.active {
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            background: linear-gradient(135deg, var(--primary), #c78b5d);
             color: white;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 12px 24px rgba(164, 90, 63, 0.28);
+        }
+
+        .page-intro {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.9fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: stretch;
+        }
+
+        .intro-panel,
+        .intro-notes {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.6rem 1.7rem;
+            box-shadow: 0 16px 34px rgba(47, 30, 20, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-panel::before,
+        .intro-notes::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(140deg, rgba(255, 255, 255, 0.26), transparent 50%);
+            pointer-events: none;
+        }
+
+        .intro-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        .intro-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            line-height: 0.95;
+            margin-bottom: 0.9rem;
+        }
+
+        .intro-copy {
+            max-width: 44rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .intro-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1.2rem;
+        }
+
+        .intro-tag {
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.76rem;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-notes-title {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .intro-notes-list {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .intro-note {
+            padding-bottom: 0.9rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .intro-note:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .intro-note strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
+        }
+
+        .intro-note span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.82rem;
         }
 
         /* --- WARNING BANNER (MIXED CONTENT) --- */
@@ -285,6 +412,7 @@
             align-items: center;
             justify-content: space-between;
             transition: var(--transition-smooth);
+            box-shadow: 0 10px 22px rgba(47, 30, 20, 0.06);
         }
 
         .status-card:hover {
@@ -380,7 +508,15 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 22px 44px rgba(47, 30, 20, 0.08);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.22), transparent 38%);
+            pointer-events: none;
         }
 
         .card-header-title {
@@ -511,8 +647,8 @@
         }
 
         .model-card.selected {
-            background: rgba(139, 92, 246, 0.05);
-            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(164, 90, 63, 0.08);
+            border-color: rgba(164, 90, 63, 0.3);
         }
 
         .model-card.selected::after {
@@ -630,7 +766,7 @@
 
         .upload-area:hover, .upload-area.drag-over {
             border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.02);
+            background: rgba(164, 90, 63, 0.04);
         }
 
         .upload-icon {
@@ -808,11 +944,11 @@
         }
 
         .template-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.32);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-muted);
-            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            color: var(--text-main);
+            padding: 0.45rem 0.82rem;
             font-size: 0.75rem;
             cursor: pointer;
             transition: var(--transition-fast);
@@ -821,7 +957,7 @@
         .template-btn:hover {
             border-color: var(--border-color-hover);
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(164, 90, 63, 0.08);
         }
 
         /* --- BUTTONS --- */
@@ -841,14 +977,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #cf9160 100%);
             color: white;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 16px 28px rgba(164, 90, 63, 0.28);
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.6);
+            box-shadow: 0 18px 30px rgba(164, 90, 63, 0.36);
         }
 
         .btn-primary:active:not(:disabled) {
@@ -877,12 +1013,12 @@
         /* --- AUDIO PLAYER CARD --- */
         .player-card {
             background: var(--bg-surface-elevated);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(164, 90, 63, 0.2);
             border-radius: var(--radius-lg);
             padding: 1.5rem;
             margin-bottom: 2rem;
             animation: slide-up 0.4s ease-out;
-            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 12px 30px rgba(164, 90, 63, 0.12);
         }
 
         @keyframes slide-up {
@@ -917,7 +1053,7 @@
         .waveform-container {
             height: 64px;
             position: relative;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(48, 34, 25, 0.08);
             border-radius: var(--radius-sm);
             margin-bottom: 1rem;
             overflow: hidden;
@@ -1127,7 +1263,7 @@
 
         .history-item.playing {
             border-color: var(--primary);
-            background: rgba(139, 92, 246, 0.02);
+            background: rgba(164, 90, 63, 0.04);
         }
 
         .history-item-top {
@@ -1364,7 +1500,7 @@
         .help-table th {
             font-weight: 600;
             color: var(--text-main);
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.22);
         }
         .help-table td {
             color: var(--text-muted);
@@ -1379,6 +1515,40 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+        }
+
+        .help-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .help-callout,
+        .help-legend {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.2rem;
+        }
+
+        .help-callout h4,
+        .help-legend h4 {
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+        }
+
+        .help-callout p,
+        .help-legend p,
+        .help-legend li {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .help-legend ul {
+            margin-left: 1rem;
+            display: grid;
+            gap: 0.35rem;
         }
 
         .footer-bottom {
@@ -1426,6 +1596,29 @@
             }
         }
 
+        @media (max-width: 900px) {
+            .page-intro,
+            .help-hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                border-radius: var(--radius-md);
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.9rem;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                border-radius: var(--radius-md);
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -1454,7 +1647,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="brand-title">360 TTS Hub</h1>
+                    <h1 class="brand-title">David TTS Atelier</h1>
+                    <p class="brand-subtitle">Voice Workbench</p>
                 </div>
             </div>
 
@@ -1487,8 +1681,8 @@
                 </nav>
 
                 <!-- THEME TOGGLE -->
-                <button class="nav-btn" id="btnThemeToggle" title="切換主題 (貓普欽 Frappé / Latte)" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border: 1px solid var(--border-color); cursor: pointer;">
-                    <!-- Sun icon for light mode (Latte) -->
+                <button class="nav-btn" id="btnThemeToggle" title="切換明暗主題" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border: 1px solid var(--border-color); cursor: pointer;">
+                    <!-- Sun icon -->
                     <svg id="themeIconSun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--warning);">
                         <circle cx="12" cy="12" r="5"/>
                         <line x1="12" y1="1" x2="12" y2="3"/>
@@ -1500,13 +1694,44 @@
                         <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                     </svg>
-                    <!-- Moon icon for dark mode (Frappé) -->
+                    <!-- Moon icon -->
                     <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--secondary);">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                     </svg>
                 </button>
             </div>
         </header>
+
+        <section class="page-intro">
+            <div class="intro-panel">
+                <div class="intro-kicker">Personal Voice Studio</div>
+                <h2 class="intro-title">把常用語音模型整理成一個乾淨、直接、可展示的個人工作台。</h2>
+                <p class="intro-copy">這裡專注在兩件事：快速試聲音，以及清楚比較不同模型的口氣、腔調與穩定度。整個介面改成個人作品集語氣，不再帶公司簡報感。</p>
+                <div class="intro-tags">
+                    <span class="intro-tag">台語 / 國語並行</span>
+                    <span class="intro-tag">快速貼文案</span>
+                    <span class="intro-tag">可遮罩模型名稱</span>
+                    <span class="intro-tag">本機保存歷史紀錄</span>
+                </div>
+            </div>
+            <aside class="intro-notes">
+                <div class="intro-notes-title">工作台焦點</div>
+                <div class="intro-notes-list">
+                    <div class="intro-note">
+                        <strong>快速試聽</strong>
+                        <span>直接切模型、調語速、貼範例文案，縮短來回比對時間。</span>
+                    </div>
+                    <div class="intro-note">
+                        <strong>對外展示</strong>
+                        <span>保留遮罩模式，適合 demo 或簡報時先隱去模型細節。</span>
+                    </div>
+                    <div class="intro-note">
+                        <strong>個人品牌</strong>
+                        <span>頁面語氣改為個人工作台與聲音實驗室，不再沿用公司化措辭。</span>
+                    </div>
+                </div>
+            </aside>
+        </section>
 
 
 
@@ -1540,9 +1765,9 @@
 
                             <!-- Quick templates -->
                             <div class="templates-row">
-                                <button class="template-btn" data-text="您好，我是創造智能的顧問 David。我們最近推出了一套全新的語音機器人解決方案，想跟您約個五分鐘時間簡單分享，不曉得您這週哪一天比較方便呢？">📞 業務拜訪</button>
+                                <button class="template-btn" data-text="您好，我是 David，最近在整理一套更自然的中文與台語語音工作流，想約您五分鐘聽聽看實際效果，也聊聊是否適合放進您的專案裡。您這週哪一天方便呢？">📞 業務拜訪</button>
                                 <button class="template-btn" data-text="各位觀眾朋友您好，歡迎收看今日整點新聞。氣象局表示，受強烈太平洋高壓影響，今日全台各地多雲到晴，高溫可達三十六度以上，請注意防曬並多補充水分。">📰 新聞播報</button>
-                                <button class="template-btn" data-text="歡迎致電創造智能客戶服務中心。保險相關業務請按一，理賠進度查詢請按二，專人服務請按零，或由語音助理為您服務。">🏦 客服語音</button>
+                                <button class="template-btn" data-text="您好，歡迎致電語音工作室服務台。若您要查詢合作進度請按一，若您要留下需求請按二，若您想直接與我聯絡請按零，或稍候由語音助理引導您完成。">🏦 客服語音</button>
                                 <button class="template-btn" data-text="逐家好！歡迎來到熱情的高雄。遮有美麗的愛河、駁二特區，閣有真好食的在地小吃。希望恁這幾天蹛得爽快，耍得歡喜！">🏔 在地導覽</button>
                             </div>
 
@@ -1932,8 +2157,8 @@
                         <div>
                             <div class="form-group">
                                 <label class="form-label" for="settingHost">API 主機名稱 (Host)</label>
-                                <input type="text" class="form-input" id="settingHost" placeholder="talk-dev.aitago.tw">
-                                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">所有 TTS 連接的預設主機。部署到 GitHub Pages 時將預設指向 talk-dev.aitago.tw。</span>
+                                <input type="text" class="form-input" id="settingHost" placeholder="your-tts-host.example.com">
+                                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">所有 TTS 連接的預設主機。若不是使用目前頁面所在網域，請在此填入自己的 API 主機。</span>
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="settingProxy">CORS / HTTPS 代理路徑</label>
@@ -1976,20 +2201,20 @@
                 <div class="card">
                     <h3 class="card-header-title">系統控制台資訊</h3>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                        如果您需要重啟服務或切換模型，這裏有一些實用的 Curl 工具與指令指引。
+                        如果您需要重啟服務或切換模型，這裡提供一組中性的範例指令。將主機名稱替換成自己的部署位置即可。
                     </p>
                     
                     <div style="background: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.75rem; border: 1px solid var(--border-color); color: var(--secondary); overflow-x: auto; white-space: pre;">
 # 手動切換 CosyVoice 3 模型
-curl -X POST "http://talk-dev.aitago.tw:8003/model/reload" \
+curl -X POST "http://your-tts-host.example.com:8003/model/reload" \
   -H "Content-Type: application/json" \
   -d '{"model_name": "CosyVoice3-0.5B-Finetuned-1222"}'
 
 # 查詢當前 CosyVoice 3 模型載入狀態
-curl http://talk-dev.aitago.tw:8003/models
+curl http://your-tts-host.example.com:8003/models
 
 # 查詢當前 CosyVoice 2 教育部台語音色列表
-curl https://tts.create360.ai/8006/voices</div>
+curl http://your-tts-host.example.com:8006/voices</div>
                 </div>
             </div>
 
@@ -2011,6 +2236,21 @@ curl https://tts.create360.ai/8006/voices</div>
                         </svg>
                         語音模型指南與對照表
                     </h3>
+
+                    <div class="help-hero">
+                        <div class="help-callout">
+                            <h4>如何看這份對照表</h4>
+                            <p>先從語言類型切入，再看模型個性。這頁文案已改成個人工作台口吻，重點放在實際使用情境，不再混入公司內部來源或品牌背景。</p>
+                        </div>
+                        <div class="help-legend">
+                            <h4>建議讀法</h4>
+                            <ul>
+                                <li>先選語言：台語或國語</li>
+                                <li>再看用途：旁白、導覽、客服、角色感</li>
+                                <li>最後切回主頁實際試聽</li>
+                            </ul>
+                        </div>
+                    </div>
 
                     
                     <div id="helpModelList">
@@ -2123,7 +2363,7 @@ curl https://tts.create360.ai/8006/voices</div>
                     <span><a href="https://david888.com" target="_blank">david888.com</a></span>
                 </div>
                 <div class="footer-copyright">
-                    © 2026 CreateIntelligens AI. All rights reserved.
+                    © 2026 David TTS Atelier
                 </div>
             </div>
         </footer>
@@ -2236,24 +2476,24 @@ curl https://tts.create360.ai/8006/voices</div>
                 // Name masking configuration for BD demos
                 this.nameMapping = {
                     'index_main': { 
-                        original: { name: 'IndexTTS (Main)', desc: '高音質國語主模型，支援多種預設中文音色與上傳複製' }, 
-                        masked: { name: '模型3', desc: '名人或三立主播訓練' } 
+                        original: { name: 'IndexTTS (Main)', desc: '高音質國語主模型，適合清晰旁白與穩定播報' }, 
+                        masked: { name: '模型3', desc: '清晰國語旁白型' } 
                     },
                     'qwen': { 
-                        original: { name: 'Qwen TTS', desc: '基於通義千問的多語言大模型，自然度高' }, 
-                        masked: { name: '模型1', desc: '台北同事音調訓練' } 
+                        original: { name: 'Qwen TTS', desc: '多語言大模型語音，語氣自然、對話感明顯' }, 
+                        masked: { name: '模型1', desc: '自然對話國語型' } 
                     },
                     'index_tw': { 
-                        original: { name: 'IndexTTS (TW)', desc: '專為台灣腔調與閩南話優化之語音模型' }, 
-                        masked: { name: '台語帶國語模型6', desc: '大量三立台劇訓練帶特色' } 
+                        original: { name: 'IndexTTS (TW)', desc: '台灣腔調明顯，適合口語感較強的台語內容' }, 
+                        masked: { name: '台語帶國語模型6', desc: '台語口語敘事型' } 
                     },
                     'cosyvoice': { 
-                        original: { name: 'CosyVoice 3', desc: '阿里開源最新語音複製模型，支援零樣本極速克隆' }, 
-                        masked: { name: '台語模型4', desc: '大量三立戲劇訓練帶情感' } 
+                        original: { name: 'CosyVoice 3', desc: '支援零樣本克隆，情緒與角色感的可塑性高' }, 
+                        masked: { name: '台語模型4', desc: '情緒台語旁白型' } 
                     },
                     'cosyvoice2': { 
-                        original: { name: 'CosyVoice 2', desc: '教育部標準台語 帶抑揚頓挫 (精調純台語語音模型)' }, 
-                        masked: { name: '台語模型2', desc: '精調純台語' } 
+                        original: { name: 'CosyVoice 2', desc: '教育部標準台語路線，節奏穩定、抑揚清楚' }, 
+                        masked: { name: '台語模型2', desc: '教育部台語基底型' } 
                     }
                 };
 
@@ -2263,16 +2503,16 @@ curl https://tts.create360.ai/8006/voices</div>
                         {
                             category: '台語 (微帶有些許國語)',
                             items: [
-                                { name: '台語帶國語模型6', desc: '大量三立台劇訓練帶特色', port: '8002' },
-                                { name: '台語模型4', desc: '大量三立戲劇訓練帶情感', port: '8003' },
-                                { name: '台語模型2', desc: '教育部標準台語 帶抑揚頓挫', port: '8006' }
+                                { name: '台語帶國語模型6', desc: '台語口語敘事型，適合導覽與口播', port: '8002' },
+                                { name: '台語模型4', desc: '情緒起伏較明顯，適合角色旁白', port: '8003' },
+                                { name: '台語模型2', desc: '教育部台語基底型，節奏最穩', port: '8006' }
                             ]
                         },
                         {
                             category: '國語 (台灣特色腔調)',
                             items: [
-                                { name: '模型3', desc: '名人或三立主播訓練', port: '8001' },
-                                { name: '模型1', desc: '台北同事音調訓練', port: '8005' }
+                                { name: '模型3', desc: '清晰國語旁白型，適合正式播報', port: '8001' },
+                                { name: '模型1', desc: '自然對話國語型，適合客服與導引', port: '8005' }
                             ]
                         }
                     ],
@@ -2280,16 +2520,16 @@ curl https://tts.create360.ai/8006/voices</div>
                         {
                             category: '台語 (微帶有些許國語)',
                             items: [
-                                { name: 'IndexTTS (TW)', desc: '大量三立台劇訓練帶特色 (專為台灣腔調與閩南話優化之語音模型)', port: '8002' },
-                                { name: 'CosyVoice 3', desc: '大量三立戲劇訓練帶情感 (阿里開源最新語音複製模型，支援零樣本克隆)', port: '8003' },
-                                { name: 'CosyVoice 2', desc: '教育部標準台語 帶抑揚頓挫 (教育部資料集精調之 CosyVoice 2 語音模型)', port: '8006' }
+                                { name: 'IndexTTS (TW)', desc: '專為台灣腔調與閩南話優化，適合導覽、對話與在地口吻內容', port: '8002' },
+                                { name: 'CosyVoice 3', desc: '零樣本克隆效率高，情緒變化與角色感表現比較靈活', port: '8003' },
+                                { name: 'CosyVoice 2', desc: '教育部台語資料路線，抑揚穩定，適合標準台語朗讀', port: '8006' }
                             ]
                         },
                         {
                             category: '國語 (台灣特色腔調)',
                             items: [
-                                { name: 'IndexTTS (Main)', desc: '名人或三立主播訓練 (高音質國語主模型，支援多種預設中文音色與上傳複製)', port: '8001' },
-                                { name: 'Qwen TTS', desc: '台北同事音調訓練 (基於通義千問的多語言大模型，自然度高)', port: '8005' }
+                                { name: 'IndexTTS (Main)', desc: '高音質國語主模型，適合穩定播報、說明旁白與長句朗讀', port: '8001' },
+                                { name: 'Qwen TTS', desc: '多語言大模型語音，自然度高，適合互動式客服與口語化場景', port: '8005' }
                             ]
                         }
                     ]
@@ -2360,11 +2600,10 @@ curl https://tts.create360.ai/8006/voices</div>
 
             loadSettings() {
                 // Determine default API host
-                // If running on local or github pages, point default host to talk-dev.aitago.tw
-                let defaultHost = 'talk-dev.aitago.tw';
-                if (window.location.hostname !== '' && 
-                    window.location.hostname !== 'localhost' && 
-                    window.location.hostname !== '127.0.0.1' && 
+                let defaultHost = 'localhost';
+                if (window.location.hostname !== '' &&
+                    window.location.hostname !== 'localhost' &&
+                    window.location.hostname !== '127.0.0.1' &&
                     !window.location.hostname.includes('github.io')) {
                     defaultHost = window.location.hostname;
                 }
@@ -2372,14 +2611,18 @@ curl https://tts.create360.ai/8006/voices</div>
                 this.config.host = localStorage.getItem('tts_host') || defaultHost;
                 this.config.proxy = localStorage.getItem('tts_proxy') || '';
                 
-                // If the site is loaded over HTTPS (like GitHub Pages or tts.create360.ai SSL),
-                // default to our secure HTTPS proxy endpoints to prevent Mixed Content blocks.
+                // If the site is loaded over HTTPS on a real host, prefer same-host proxy paths.
                 const isHttps = window.location.protocol === 'https:';
-                const defaultMainUrl = isHttps ? 'https://tts.create360.ai/8001' : `http://${this.config.host}:8001`;
-                const defaultTwUrl = isHttps ? 'https://tts.create360.ai/8002' : `http://${this.config.host}:8002`;
-                const defaultCosyUrl = isHttps ? 'https://tts.create360.ai/8003' : `http://${this.config.host}:8003`;
-                const defaultCosy2Url = isHttps ? 'https://tts.create360.ai/8006' : `http://${this.config.host}:8006`;
-                const defaultQwenUrl = isHttps ? 'https://tts.create360.ai/8005' : `http://${this.config.host}:8005`;
+                const canUseSameHostProxy = isHttps &&
+                    window.location.hostname !== '' &&
+                    window.location.hostname !== 'localhost' &&
+                    window.location.hostname !== '127.0.0.1' &&
+                    !window.location.hostname.includes('github.io');
+                const defaultMainUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8001` : `http://${this.config.host}:8001`;
+                const defaultTwUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8002` : `http://${this.config.host}:8002`;
+                const defaultCosyUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8003` : `http://${this.config.host}:8003`;
+                const defaultCosy2Url = canUseSameHostProxy ? `https://${window.location.hostname}/8006` : `http://${this.config.host}:8006`;
+                const defaultQwenUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8005` : `http://${this.config.host}:8005`;
 
                 this.config.urls.index_main = localStorage.getItem('tts_url_8001') || defaultMainUrl;
                 this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || defaultTwUrl;
@@ -2398,7 +2641,7 @@ curl https://tts.create360.ai/8006/voices</div>
             }
 
             saveSettings() {
-                this.config.host = document.getElementById('settingHost').value.trim() || 'talk-dev.aitago.tw';
+                this.config.host = document.getElementById('settingHost').value.trim() || 'localhost';
                 this.config.proxy = document.getElementById('settingProxy').value.trim();
                 
                 this.config.urls.index_main = document.getElementById('customUrl8001').value.trim() || `http://${this.config.host}:8001`;
