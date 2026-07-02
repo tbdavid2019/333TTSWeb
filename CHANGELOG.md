@@ -17,7 +17,7 @@
 - **連線狀態欄移至 Footer**：為避免外部展示時暴露後端架構，將整個狀態檢測欄從頁面頂部移至底部頁尾（Footer）。
 - **全新三欄式極致佈局 (3-Column DAW Layout)**：主面板由原兩欄式改為高階專業「三欄式工作站」排版（Column 1: 文字輸入編輯區 | Column 2: 模型選擇與各參數調校區 | Column 3: 播放監聽與歷史合成紀錄區）。大幅消除因模型卡片過長而導致的大幅上下滾動，全面提升操作效率。自適應斷點設定為 `1200px`（折疊為雙欄）與 `768px`（折疊為單欄）。
 - **新增麵包屑引導機制 (Breadcrumb Navigation)**：在「設定」卡片與「說明」卡片的頂部皆導入極具質感的麵包屑導航列（🏠 首頁 / 設定 或 說明），提供直覺好用的跳轉回饋。
-- **商標點擊回首頁**：左上角 `360 TTS Hub` 品牌 Logo 正式綁定導航事件，點擊即可一鍵滑順切換回首頁主面板。
+- **商標點擊回首頁**：左上角 `333 Taiwanese TTS Hub` 品牌 Logo 正式綁定導航事件，點擊即可一鍵滑順切換回首頁主面板。
 - **動態語音說明對照表 (Help Panel)**：改為由 JS 驅動的動態渲染對照表，並將「台語模型」置頂展示。相容外部展示模式切換，當「外部展示模式」開啟（ON）時，說明面板內容將自動對應顯示為安全且符合 BD 演示用之遮蔽規格描述（如：模型 6、模型 4、模型 2）。
 
 ### 🤫 外部商務展示模式 (Name Masking Mode)
@@ -60,7 +60,7 @@
 ### 🔒 安全性與跨網域 (CORS) 支援
 - **HTTPS 域名反向代理**：成功為 `tts.create360.ai` 域名申請並配置了 Let's Encrypt SSL 憑證。
 - **Nginx 安全轉發**：設置了 Nginx 代理規則，將外部安全的 HTTPS 流量轉發至本機各 TTS 引擎的 HTTP 端口（`8001`、`8002`、`8003`、`8005`）。
-- **客戶端自動適應**：更新 [index.html](file:///Users/david/Documents/git-360/360TTSWeb/index.html) 的 URL 載入邏輯，在 `https://` 協議下會自動更換 API 網址為 `https://tts.create360.ai/800X/`，完美繞過 Mixed Content 瀏覽器封鎖。
+- **客戶端自動適應**：更新 [index.html](/Users/david/Documents/git/tbdavid2019/333TTSWeb/index.html) 的 URL 載入邏輯，在 `https://` 協議下會自動更換 API 網址為 `https://tts.create360.ai/800X/`，完美繞過 Mixed Content 瀏覽器封鎖。
 
 ---
 

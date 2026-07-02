@@ -1,4 +1,4 @@
-# David TTS Atelier
+# 333 Taiwanese TTS Hub
 
 這是一個單頁語音工作台，可用於本地部署或直接託管至 GitHub Pages。它整合多個 TTS 服務，方便快速試聽、比較模型差異、展示台語與國語語音效果。
 
@@ -28,7 +28,7 @@
 2. 進入儲存庫的 **Settings** -> **Pages**。
 3. 將 Build and deployment 的 Source 設定為 `Deploy from a branch`。
 4. 選擇 `main` 分支的 `/ (root)`，並點擊 Save。
-5. 稍等片刻，即可透過生成的 `https://<您的 GitHub 帳號>.github.io/360TTSWeb/` 開啟服務！
+5. 稍等片刻，即可透過生成的 `https://<您的 GitHub 帳號>.github.io/333TTSWeb/` 開啟服務！
 
 ---
 
