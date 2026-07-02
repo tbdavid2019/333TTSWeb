@@ -21,6 +21,16 @@
 - **可配置設定**：
   - 支援在介面中動態設定 API 連線主機（Host）以及自訂各端口的 URL。
   - 提供 CORS 代理欄位，幫助繞過部分網絡與瀏覽器安全阻擋。
+- **模型可用性保護**：
+  - 前端會自動檢測各 TTS 服務的健康狀態。
+  - 若模型離線，卡片仍保留顯示，但會變成灰化且不可點擊，避免使用者誤選。
+  - 若當前選中的模型在檢測後變成離線，介面會自動切回第一個仍在線的模型。
+
+## 📚 外部參考來源
+- **外部taigiTTS**：列為台語外部來源參考，預設模型為 `model6`。
+  - Hugging Face Space: `https://huggingface.co/spaces/tbdavid2019/Taiwanese-tts/blob/main/app.py`
+  - 外部 API: `https://learn-language.tokyo/taigiTTS/taigi-text-to-speech`
+  - 目前是外部 dependency/reference，不屬於 `tts.create360.ai` 的 `/srv/...` 備份範圍。
 
 ## 🚀 部署至 GitHub Pages
 此專案沒有任何複雜的打包工具或編譯流程。您只需要：

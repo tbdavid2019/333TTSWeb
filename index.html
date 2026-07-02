@@ -655,6 +655,29 @@
             border-color: var(--primary);
         }
 
+        .model-card.unavailable {
+            cursor: not-allowed;
+            opacity: 0.48;
+            filter: grayscale(0.12);
+            background: rgba(128, 128, 128, 0.08);
+            border-color: rgba(128, 128, 128, 0.2);
+            transform: none;
+        }
+
+        .model-card.unavailable:hover {
+            border-color: rgba(128, 128, 128, 0.2);
+            transform: none;
+        }
+
+        .model-card.unavailable::after {
+            border-color: rgba(128, 128, 128, 0.22);
+        }
+
+        .model-card.unavailable .model-icon {
+            background: rgba(128, 128, 128, 0.1);
+            color: var(--text-muted);
+        }
+
         .model-icon {
             width: 36px;
             height: 36px;
@@ -2548,6 +2571,14 @@ curl http://your-tts-host.example.com:8006/voices</div>
                     }
                 };
 
+                this.serviceAvailability = {
+                    index_main: true,
+                    index_tw: true,
+                    cosyvoice: true,
+                    cosyvoice2: true,
+                    qwen: true
+                };
+
                 // Audio properties
                 this.currentAudioBlob = null;
                 this.currentAudioBuffer = null;
@@ -2801,6 +2832,10 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 // Model Card Selector
                 document.querySelectorAll('.model-card').forEach(card => {
                     card.addEventListener('click', () => {
+                        if (card.classList.contains('unavailable')) {
+                            this.showToast('warning', '模型離線', '這個模型目前無法使用，請改選其他線上的模型');
+                            return;
+                        }
                         document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
                         card.classList.add('selected');
                         this.selectedModel = card.dataset.model;
@@ -2961,6 +2996,32 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 this.renderHelpPanel();
             }
 
+            syncModelAvailabilityUI() {
+                document.querySelectorAll('.model-card').forEach(card => {
+                    const modelKey = card.dataset.model;
+                    const isAvailable = this.serviceAvailability[modelKey] !== false;
+                    card.classList.toggle('unavailable', !isAvailable);
+                    card.setAttribute('aria-disabled', isAvailable ? 'false' : 'true');
+                    card.title = isAvailable ? '' : '模型目前離線，暫時不可使用';
+                });
+
+                if (this.serviceAvailability[this.selectedModel] === false) {
+                    const fallbackOrder = ['cosyvoice2', 'index_tw', 'index_main', 'qwen', 'cosyvoice'];
+                    const fallbackModel = fallbackOrder.find(modelKey => this.serviceAvailability[modelKey] !== false);
+                    if (fallbackModel) {
+                        const fallbackCard = document.querySelector(`.model-card[data-model="${fallbackModel}"]`);
+                        document.querySelectorAll('.model-card').forEach(card => card.classList.remove('selected'));
+                        if (fallbackCard) {
+                            fallbackCard.classList.add('selected');
+                        }
+                        this.selectedModel = fallbackModel;
+                        this.updateModelOptionsUI();
+                    }
+                }
+
+                this.renderHelpPanel();
+            }
+
             switchTab(tabId) {
                 document.querySelectorAll('.nav-tabs .nav-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
@@ -2987,10 +3048,20 @@ curl http://your-tts-host.example.com:8006/voices</div>
                             <div class="model-selector-grid">
                     `;
                     cat.items.forEach(item => {
+                        const modelKeyByPort = {
+                            '8001': 'index_main',
+                            '8002': 'index_tw',
+                            '8003': 'cosyvoice',
+                            '8005': 'qwen',
+                            '8006': 'cosyvoice2'
+                        };
+                        const itemModelKey = modelKeyByPort[String(item.port)];
+                        const isAvailable = itemModelKey ? this.serviceAvailability[itemModelKey] !== false : true;
                         html += `
-                                <div class="help-section" style="margin-bottom: 0; padding: 1rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.25rem;">
+                                <div class="help-section" style="margin-bottom: 0; padding: 1rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.25rem; ${isAvailable ? '' : 'opacity: 0.48;'}">
                                     <h4 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; color: var(--text-main); font-size: 0.85rem; font-weight: 600;">
                                         <span>${item.name} <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: normal; margin-left: 0.5rem;">(Port ${item.port})</span></span>
+                                        <span style="font-size: 0.68rem; color: ${isAvailable ? 'var(--success)' : 'var(--error)'}; font-weight: 600;">${isAvailable ? '可用' : '離線'}</span>
                                     </h4>
                                     <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin: 0;">${item.desc}</p>
                                 </div>
@@ -3123,6 +3194,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                     clearTimeout(timeoutId);
                     
                     if (response.ok) {
+                        this.serviceAvailability[serviceKey] = true;
                         badge.className = 'status-badge online';
                         dot.className = 'status-dot';
                         text.textContent = '線上';
@@ -3130,10 +3202,13 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         throw new Error('Not OK');
                     }
                 } catch (error) {
+                    this.serviceAvailability[serviceKey] = false;
                     badge.className = 'status-badge offline';
                     dot.className = 'status-dot';
                     text.textContent = '離線';
                 }
+
+                this.syncModelAvailabilityUI();
             }
 
             // --- FETCH METADATA DYNAMICALLY ---
