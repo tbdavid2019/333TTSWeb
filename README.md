@@ -8,6 +8,7 @@
   - **IndexTTS (TW) [Port 8002]**：針對台灣國語腔調與閩南話特別優化的在地口音模型。
   - **CosyVoice 3 [Port 8003]**：阿里開源最新聲音克隆系統，支援預訓練音色（SFT）與零樣本克隆（Zero-Shot，音色複製）。
   - **CosyVoice 2 [Port 8006]**：教育部台語資料路線，節奏穩定、抑揚清楚，適合標準台語朗讀。
+  - **外部taigiTTS [External]**：外部台語 TTS 來源，已整合進台語分區，預設模型為 `model6`。
   - **Qwen TTS [Port 8005]**：基於 1.7B 參數量的大型語音合成模型，支援中、英、日、韓、法、德等十餘種語言的混讀。
 - **極速聲音克隆**：
   - **IndexTTS 克隆 (`/tts_upload`)**：支援透過上傳 3-10 秒參考音訊並調整隨機種子（Seed）進行克隆。
@@ -30,7 +31,8 @@
 - **外部taigiTTS**：列為台語外部來源參考，預設模型為 `model6`。
   - Hugging Face Space: `https://huggingface.co/spaces/tbdavid2019/Taiwanese-tts/blob/main/app.py`
   - 外部 API: `https://learn-language.tokyo/taigiTTS/taigi-text-to-speech`
-  - 目前是外部 dependency/reference，不屬於 `tts.create360.ai` 的 `/srv/...` 備份範圍。
+  - 已整合進前端台語模型分區。
+  - 仍屬於外部 dependency/reference，不屬於 `tts.create360.ai` 的 `/srv/...` 備份範圍。
 
 ## 🚀 部署至 GitHub Pages
 此專案沒有任何複雜的打包工具或編譯流程。您只需要：

@@ -1856,20 +1856,27 @@
                                     <div class="model-card-title">CosyVoice 3</div>
                                     <div class="model-card-desc">阿里開源最新語音複製模型，支援零樣本極速克隆</div>
                                 </div>
+                                <div class="model-card" data-model="taigi_external">
+                                    <div class="model-icon">
+                                        <span>4</span>
+                                    </div>
+                                    <div class="model-card-title">外部taigiTTS</div>
+                                    <div class="model-card-desc">外部台語 TTS 來源，預設使用 model6</div>
+                                </div>
                             </div>
                             
                             <div class="model-category-header" style="margin-top: 1rem;">國語 (台灣特色腔調)</div>
                             <div class="model-selector-grid">
                                 <div class="model-card" data-model="index_main">
                                     <div class="model-icon">
-                                        <span>4</span>
+                                        <span>5</span>
                                     </div>
                                     <div class="model-card-title">IndexTTS (Main)</div>
                                     <div class="model-card-desc">高音質國語主模型，支援多種預設中文音色與上傳複製</div>
                                 </div>
                                 <div class="model-card" data-model="qwen">
                                     <div class="model-icon">
-                                        <span>5</span>
+                                        <span>6</span>
                                     </div>
                                     <div class="model-card-title">Qwen TTS</div>
                                     <div class="model-card-desc">基於通義千問的多語言大模型，自然度高</div>
@@ -2032,6 +2039,19 @@
                                         <input type="number" class="form-input" id="cosy2Seed" value="0" min="0">
                                         <button class="reload-btn" id="cosy2RandomSeedBtn">🎲 隨機</button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- External taigiTTS Options -->
+                            <div id="options-taigi-external" class="model-options-group hidden">
+                                <div class="form-group">
+                                    <label class="form-label" for="taigiExternalModel">外部台語模型</label>
+                                    <select class="form-select" id="taigiExternalModel">
+                                        <option value="model5">model5</option>
+                                        <option value="model6" selected>model6</option>
+                                        <option value="model7">model7</option>
+                                    </select>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">外部來源預設使用 model6，會直接呼叫外部台語 API。</span>
                                 </div>
                             </div>
 
@@ -2514,6 +2534,10 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         original: { name: 'CosyVoice 3', desc: '支援零樣本克隆，情緒與角色感的可塑性高' }, 
                         masked: { name: '台語模型4', desc: '情緒台語旁白型' } 
                     },
+                    'taigi_external': {
+                        original: { name: '外部taigiTTS', desc: '外部台語 TTS 來源，預設 model6，適合補充台語合成' },
+                        masked: { name: '台語外部模型6', desc: '外部台語補充型' }
+                    },
                     'cosyvoice2': { 
                         original: { name: 'CosyVoice 2', desc: '教育部標準台語路線，節奏穩定、抑揚清楚' }, 
                         masked: { name: '台語模型2', desc: '教育部台語基底型' } 
@@ -2528,7 +2552,8 @@ curl http://your-tts-host.example.com:8006/voices</div>
                             items: [
                                 { name: '台語帶國語模型6', desc: '台語口語敘事型，適合導覽與口播', port: '8002' },
                                 { name: '台語模型4', desc: '情緒起伏較明顯，適合角色旁白', port: '8003' },
-                                { name: '台語模型2', desc: '教育部台語基底型，節奏最穩', port: '8006' }
+                                { name: '台語模型2', desc: '教育部台語基底型，節奏最穩', port: '8006' },
+                                { name: '台語外部模型6', desc: '外部台語補充型，預設 model6', port: 'EXT', serviceKey: 'taigi_external' }
                             ]
                         },
                         {
@@ -2545,7 +2570,8 @@ curl http://your-tts-host.example.com:8006/voices</div>
                             items: [
                                 { name: 'IndexTTS (TW)', desc: '專為台灣腔調與閩南話優化，適合導覽、對話與在地口吻內容', port: '8002' },
                                 { name: 'CosyVoice 3', desc: '零樣本克隆效率高，情緒變化與角色感表現比較靈活', port: '8003' },
-                                { name: 'CosyVoice 2', desc: '教育部台語資料路線，抑揚穩定，適合標準台語朗讀', port: '8006' }
+                                { name: 'CosyVoice 2', desc: '教育部台語資料路線，抑揚穩定，適合標準台語朗讀', port: '8006' },
+                                { name: '外部taigiTTS', desc: '外部台語 TTS 補充來源，預設使用 model6', port: 'EXT', serviceKey: 'taigi_external' }
                             ]
                         },
                         {
@@ -2567,7 +2593,8 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         index_tw: '',
                         cosyvoice: '',
                         cosyvoice2: '',
-                        qwen: ''
+                        qwen: '',
+                        taigi_external: 'https://learn-language.tokyo/taigiTTS/taigi-text-to-speech'
                     }
                 };
 
@@ -2576,7 +2603,8 @@ curl http://your-tts-host.example.com:8006/voices</div>
                     index_tw: true,
                     cosyvoice: true,
                     cosyvoice2: true,
-                    qwen: true
+                    qwen: true,
+                    taigi_external: true
                 };
 
                 // Audio properties
@@ -2705,6 +2733,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 this.config.urls.cosyvoice = resolveStoredUrl('tts_url_8003', defaultUrls.cosyvoice, '8003');
                 this.config.urls.cosyvoice2 = resolveStoredUrl('tts_url_8006', defaultUrls.cosyvoice2, '8006');
                 this.config.urls.qwen = resolveStoredUrl('tts_url_8005', defaultUrls.qwen, '8005');
+                this.config.urls.taigi_external = 'https://learn-language.tokyo/taigiTTS/taigi-text-to-speech';
 
                 if (isGithubPages && (this.config.host === 'localhost' || this.config.host === '127.0.0.1')) {
                     this.config.host = defaultHost;
@@ -2731,6 +2760,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 this.config.urls.cosyvoice = document.getElementById('customUrl8003').value.trim() || defaultUrls.cosyvoice;
                 this.config.urls.cosyvoice2 = document.getElementById('customUrl8006').value.trim() || defaultUrls.cosyvoice2;
                 this.config.urls.qwen = document.getElementById('customUrl8005').value.trim() || defaultUrls.qwen;
+                this.config.urls.taigi_external = 'https://learn-language.tokyo/taigiTTS/taigi-text-to-speech';
 
                 localStorage.setItem('tts_host', this.config.host);
                 localStorage.setItem('tts_proxy', this.config.proxy);
@@ -3006,7 +3036,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 });
 
                 if (this.serviceAvailability[this.selectedModel] === false) {
-                    const fallbackOrder = ['cosyvoice2', 'index_tw', 'index_main', 'qwen', 'cosyvoice'];
+                    const fallbackOrder = ['cosyvoice2', 'index_tw', 'taigi_external', 'index_main', 'qwen', 'cosyvoice'];
                     const fallbackModel = fallbackOrder.find(modelKey => this.serviceAvailability[modelKey] !== false);
                     if (fallbackModel) {
                         const fallbackCard = document.querySelector(`.model-card[data-model="${fallbackModel}"]`);
@@ -3055,7 +3085,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                             '8005': 'qwen',
                             '8006': 'cosyvoice2'
                         };
-                        const itemModelKey = modelKeyByPort[String(item.port)];
+                        const itemModelKey = item.serviceKey || modelKeyByPort[String(item.port)];
                         const isAvailable = itemModelKey ? this.serviceAvailability[itemModelKey] !== false : true;
                         html += `
                                 <div class="help-section" style="margin-bottom: 0; padding: 1rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 0.25rem; ${isAvailable ? '' : 'opacity: 0.48;'}">
@@ -3081,6 +3111,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 document.getElementById('options-qwen').classList.toggle('hidden', this.selectedModel !== 'qwen');
                 document.getElementById('options-cosyvoice').classList.toggle('hidden', this.selectedModel !== 'cosyvoice');
                 document.getElementById('options-cosyvoice2').classList.toggle('hidden', this.selectedModel !== 'cosyvoice2');
+                document.getElementById('options-taigi-external').classList.toggle('hidden', this.selectedModel !== 'taigi_external');
                 
                 // Auto switch voice select list when switching index_main / index_tw
                 if (this.selectedModel === 'index_main') {
@@ -3492,6 +3523,21 @@ curl http://your-tts-host.example.com:8006/voices</div>
                                 speed: speed
                             })
                         };
+                    } else if (this.selectedModel === 'taigi_external') {
+                        modelName = '外部taigiTTS';
+                        voiceName = document.getElementById('taigiExternalModel').value;
+                        endpoint = this.getEndpoint('taigi_external', '');
+                        fetchOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'origin': 'https://learn-language.tokyo'
+                            },
+                            body: JSON.stringify({
+                                text: text,
+                                model: voiceName
+                            })
+                        };
                     } else if (this.selectedModel === 'cosyvoice2') {
                         modelName = 'CosyVoice 2';
                         endpoint = this.getEndpoint('cosyvoice2', '/inference_with_voice_config');
@@ -3523,7 +3569,20 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         throw new Error(`HTTP ${response.status}: ${errorMsg}`);
                     }
 
-                    audioBlob = await response.blob();
+                    if (this.selectedModel === 'taigi_external') {
+                        const data = await response.json();
+                        const audioUrl = data.converted_audio_url || data.audio_url;
+                        if (!audioUrl) {
+                            throw new Error('外部 taigiTTS 未回傳音檔網址');
+                        }
+                        const audioResponse = await fetch(audioUrl);
+                        if (!audioResponse.ok) {
+                            throw new Error(`外部音檔下載失敗: HTTP ${audioResponse.status}`);
+                        }
+                        audioBlob = await audioResponse.blob();
+                    } else {
+                        audioBlob = await response.blob();
+                    }
                     
                     this.showToast('success', '合成完成', `音訊成功產生 (${(audioBlob.size/1024).toFixed(1)} KB)`);
                     
