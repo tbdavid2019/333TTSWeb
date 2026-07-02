@@ -2565,6 +2565,56 @@ curl http://your-tts-host.example.com:8006/voices</div>
                 this.init();
             }
 
+            getDefaultHost() {
+                if (window.location.hostname.includes('github.io')) {
+                    return 'tts.create360.ai';
+                }
+
+                if (window.location.hostname !== '' &&
+                    window.location.hostname !== 'localhost' &&
+                    window.location.hostname !== '127.0.0.1') {
+                    return window.location.hostname;
+                }
+
+                return 'localhost';
+            }
+
+            getDefaultServiceUrls(host = this.getDefaultHost()) {
+                const isHttps = window.location.protocol === 'https:';
+                const isGithubPages = window.location.hostname.includes('github.io');
+                const isLocal = window.location.hostname === '' ||
+                    window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1';
+
+                if (isGithubPages) {
+                    return {
+                        index_main: 'https://tts.create360.ai/8001',
+                        index_tw: 'https://tts.create360.ai/8002',
+                        cosyvoice: 'https://tts.create360.ai/8003',
+                        cosyvoice2: 'https://tts.create360.ai/8006',
+                        qwen: 'https://tts.create360.ai/8005'
+                    };
+                }
+
+                if (isHttps && !isLocal) {
+                    return {
+                        index_main: `https://${window.location.hostname}/8001`,
+                        index_tw: `https://${window.location.hostname}/8002`,
+                        cosyvoice: `https://${window.location.hostname}/8003`,
+                        cosyvoice2: `https://${window.location.hostname}/8006`,
+                        qwen: `https://${window.location.hostname}/8005`
+                    };
+                }
+
+                return {
+                    index_main: `http://${host}:8001`,
+                    index_tw: `http://${host}:8002`,
+                    cosyvoice: `http://${host}:8003`,
+                    cosyvoice2: `http://${host}:8006`,
+                    qwen: `http://${host}:8005`
+                };
+            }
+
             async init() {
                 // Initialize settings
                 this.loadSettings();
@@ -2599,36 +2649,36 @@ curl http://your-tts-host.example.com:8006/voices</div>
             }
 
             loadSettings() {
-                // Determine default API host
-                let defaultHost = 'localhost';
-                if (window.location.hostname !== '' &&
-                    window.location.hostname !== 'localhost' &&
-                    window.location.hostname !== '127.0.0.1' &&
-                    !window.location.hostname.includes('github.io')) {
-                    defaultHost = window.location.hostname;
-                }
-
+                const defaultHost = this.getDefaultHost();
                 this.config.host = localStorage.getItem('tts_host') || defaultHost;
                 this.config.proxy = localStorage.getItem('tts_proxy') || '';
-                
-                // If the site is loaded over HTTPS on a real host, prefer same-host proxy paths.
-                const isHttps = window.location.protocol === 'https:';
-                const canUseSameHostProxy = isHttps &&
-                    window.location.hostname !== '' &&
-                    window.location.hostname !== 'localhost' &&
-                    window.location.hostname !== '127.0.0.1' &&
-                    !window.location.hostname.includes('github.io');
-                const defaultMainUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8001` : `http://${this.config.host}:8001`;
-                const defaultTwUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8002` : `http://${this.config.host}:8002`;
-                const defaultCosyUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8003` : `http://${this.config.host}:8003`;
-                const defaultCosy2Url = canUseSameHostProxy ? `https://${window.location.hostname}/8006` : `http://${this.config.host}:8006`;
-                const defaultQwenUrl = canUseSameHostProxy ? `https://${window.location.hostname}/8005` : `http://${this.config.host}:8005`;
 
-                this.config.urls.index_main = localStorage.getItem('tts_url_8001') || defaultMainUrl;
-                this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || defaultTwUrl;
-                this.config.urls.cosyvoice = localStorage.getItem('tts_url_8003') || defaultCosyUrl;
-                this.config.urls.cosyvoice2 = localStorage.getItem('tts_url_8006') || defaultCosy2Url;
-                this.config.urls.qwen = localStorage.getItem('tts_url_8005') || defaultQwenUrl;
+                const defaultUrls = this.getDefaultServiceUrls(this.config.host);
+                const isGithubPages = window.location.hostname.includes('github.io');
+                const resolveStoredUrl = (storageKey, fallbackUrl, legacyPort) => {
+                    const storedUrl = localStorage.getItem(storageKey);
+                    if (!storedUrl) return fallbackUrl;
+
+                    const legacyLocalUrl = `http://localhost:${legacyPort}`;
+                    const legacyLoopbackUrl = `http://127.0.0.1:${legacyPort}`;
+                    if (isGithubPages && (storedUrl === legacyLocalUrl || storedUrl === legacyLoopbackUrl)) {
+                        localStorage.setItem(storageKey, fallbackUrl);
+                        return fallbackUrl;
+                    }
+
+                    return storedUrl;
+                };
+
+                this.config.urls.index_main = resolveStoredUrl('tts_url_8001', defaultUrls.index_main, '8001');
+                this.config.urls.index_tw = resolveStoredUrl('tts_url_8002', defaultUrls.index_tw, '8002');
+                this.config.urls.cosyvoice = resolveStoredUrl('tts_url_8003', defaultUrls.cosyvoice, '8003');
+                this.config.urls.cosyvoice2 = resolveStoredUrl('tts_url_8006', defaultUrls.cosyvoice2, '8006');
+                this.config.urls.qwen = resolveStoredUrl('tts_url_8005', defaultUrls.qwen, '8005');
+
+                if (isGithubPages && (this.config.host === 'localhost' || this.config.host === '127.0.0.1')) {
+                    this.config.host = defaultHost;
+                    localStorage.setItem('tts_host', this.config.host);
+                }
 
                 // Update settings UI fields
                 document.getElementById('settingHost').value = this.config.host;
@@ -2641,14 +2691,15 @@ curl http://your-tts-host.example.com:8006/voices</div>
             }
 
             saveSettings() {
-                this.config.host = document.getElementById('settingHost').value.trim() || 'localhost';
+                this.config.host = document.getElementById('settingHost').value.trim() || this.getDefaultHost();
                 this.config.proxy = document.getElementById('settingProxy').value.trim();
-                
-                this.config.urls.index_main = document.getElementById('customUrl8001').value.trim() || `http://${this.config.host}:8001`;
-                this.config.urls.index_tw = document.getElementById('customUrl8002').value.trim() || `http://${this.config.host}:8002`;
-                this.config.urls.cosyvoice = document.getElementById('customUrl8003').value.trim() || `http://${this.config.host}:8003`;
-                this.config.urls.cosyvoice2 = document.getElementById('customUrl8006').value.trim() || `http://${this.config.host}:8006`;
-                this.config.urls.qwen = document.getElementById('customUrl8005').value.trim() || `http://${this.config.host}:8005`;
+
+                const defaultUrls = this.getDefaultServiceUrls(this.config.host);
+                this.config.urls.index_main = document.getElementById('customUrl8001').value.trim() || defaultUrls.index_main;
+                this.config.urls.index_tw = document.getElementById('customUrl8002').value.trim() || defaultUrls.index_tw;
+                this.config.urls.cosyvoice = document.getElementById('customUrl8003').value.trim() || defaultUrls.cosyvoice;
+                this.config.urls.cosyvoice2 = document.getElementById('customUrl8006').value.trim() || defaultUrls.cosyvoice2;
+                this.config.urls.qwen = document.getElementById('customUrl8005').value.trim() || defaultUrls.qwen;
 
                 localStorage.setItem('tts_host', this.config.host);
                 localStorage.setItem('tts_proxy', this.config.proxy);

@@ -45,7 +45,7 @@
   - `https://tts.create360.ai/8005/` ➔ `http://127.0.0.1:8005/` (Qwen TTS)
 
 **自動適應邏輯**：
-網頁 [index.html](/Users/david/Documents/git/tbdavid2019/333TTSWeb/index.html) 會在 HTTPS 的真實網域環境下優先使用同網域 `/8001`、`/8002`、`/8003`、`/8005`、`/8006` 路徑；若是本機或未配置代理的情況，則回退到 `http://<host>:port`。
+網頁 [index.html](/Users/david/Documents/git/tbdavid2019/333TTSWeb/index.html) 在 `tbdavid2019.github.io/333TTSWeb/` 上會預設使用 `https://tts.create360.ai/8001`、`/8002`、`/8003`、`/8005`、`/8006`。若部署在其他 HTTPS 網域，則優先使用同網域 `/800x` 路徑；若是本機或未配置代理的情況，才回退到 `http://<host>:port`。
 
 ---
 
