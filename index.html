@@ -2610,6 +2610,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
 
                 // Audio properties
                 this.currentAudioBlob = null;
+                this.currentAudioUrl = null;
                 this.currentAudioBuffer = null;
                 this.audioCtx = null;
                 this.audioElement = document.getElementById('globalAudioElement');
@@ -3576,11 +3577,35 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         if (!audioUrl) {
                             throw new Error('外部 taigiTTS 未回傳音檔網址');
                         }
-                        const audioResponse = await fetch(audioUrl);
-                        if (!audioResponse.ok) {
-                            throw new Error(`外部音檔下載失敗: HTTP ${audioResponse.status}`);
+                        let usedDirectUrl = false;
+                        try {
+                            const audioResponse = await fetch(audioUrl);
+                            if (!audioResponse.ok) {
+                                throw new Error(`HTTP ${audioResponse.status}`);
+                            }
+                            audioBlob = await audioResponse.blob();
+                        } catch (audioFetchError) {
+                            usedDirectUrl = true;
+                            this.showToast('warning', '外部音檔改用直連播放', '外部來源不允許跨網域抓檔，已改為直接串流播放');
+                            await this.loadAudioToPlayer(audioUrl, text, modelName, voiceName, this.selectedModel);
                         }
-                        audioBlob = await audioResponse.blob();
+
+                        if (usedDirectUrl) {
+                            const historyItem = {
+                                id: 'tts_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+                                timestamp: Date.now(),
+                                model: modelName,
+                                voice: voiceName,
+                                modelKey: this.selectedModel,
+                                text: text,
+                                audioUrl: audioUrl,
+                                audioSizeLabel: 'External URL'
+                            };
+                            await this.db.save(historyItem);
+                            this.historyItems.unshift(historyItem);
+                            this.renderHistory();
+                            return;
+                        }
                     } else {
                         audioBlob = await response.blob();
                     }
@@ -3598,7 +3623,8 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         voice: voiceName,
                         modelKey: this.selectedModel,
                         text: text,
-                        audioData: audioBlob
+                        audioData: audioBlob,
+                        audioSizeLabel: `${(audioBlob.size/1024).toFixed(1)} KB`
                     };
                     await this.db.save(historyItem);
                     this.historyItems.unshift(historyItem);
@@ -3616,13 +3642,14 @@ curl http://your-tts-host.example.com:8006/voices</div>
             }
 
             // --- AUDIO PLAYBACK CONTROL ---
-            async loadAudioToPlayer(blob, text, model, voice, modelKey = null) {
+            async loadAudioToPlayer(audioSource, text, model, voice, modelKey = null) {
                 // Stop current playing
                 this.stopPlayback();
 
-                this.currentAudioBlob = blob;
-                const audioUrl = URL.createObjectURL(blob);
-                this.audioElement.src = audioUrl;
+                const isBlob = audioSource instanceof Blob;
+                this.currentAudioBlob = isBlob ? audioSource : null;
+                this.currentAudioUrl = isBlob ? URL.createObjectURL(audioSource) : audioSource;
+                this.audioElement.src = this.currentAudioUrl;
 
                 this.activePlayerModelKey = modelKey || this.selectedModel;
 
@@ -3651,26 +3678,28 @@ curl http://your-tts-host.example.com:8006/voices</div>
                     if (!this.audioCtx) {
                         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     }
-                    
-                    // read arraybuffer
-                    const arrayBuffer = await blob.arrayBuffer();
-                    
-                    // Need to copy because decodeAudioData consumes the buffer
-                    const bufferCopy = arrayBuffer.slice(0);
-                    
-                    // Decode audio data
-                    this.audioCtx.decodeAudioData(bufferCopy, (buffer) => {
-                        this.currentAudioBuffer = buffer;
-                        document.getElementById('playerSampleRate').textContent = buffer.sampleRate;
-                        this.drawStaticWaveform();
-                    }, (err) => {
-                        console.warn('Could not decode audio data for visualizer', err);
-                        // Draw empty waveform
+
+                    if (isBlob) {
+                        const arrayBuffer = await audioSource.arrayBuffer();
+                        const bufferCopy = arrayBuffer.slice(0);
+
+                        this.audioCtx.decodeAudioData(bufferCopy, (buffer) => {
+                            this.currentAudioBuffer = buffer;
+                            document.getElementById('playerSampleRate').textContent = buffer.sampleRate;
+                            this.drawStaticWaveform();
+                        }, (err) => {
+                            console.warn('Could not decode audio data for visualizer', err);
+                            this.drawEmptyWaveform();
+                        });
+                    } else {
+                        this.currentAudioBuffer = null;
+                        document.getElementById('playerSampleRate').textContent = '16000';
                         this.drawEmptyWaveform();
-                    });
+                    }
 
                 } catch (e) {
                     console.warn('AudioContext failed to initialize', e);
+                    this.drawEmptyWaveform();
                 }
 
                 // Autoplay
@@ -3704,7 +3733,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
             }
 
             togglePlayback() {
-                if (!this.currentAudioBlob) return;
+                if (!this.currentAudioBlob && !this.currentAudioUrl) return;
                 if (this.isPlaying) {
                     this.pauseAudio();
                 } else {
@@ -3749,15 +3778,17 @@ curl http://your-tts-host.example.com:8006/voices</div>
             }
 
             downloadAudio() {
-                if (!this.currentAudioBlob) return;
-                const url = URL.createObjectURL(this.currentAudioBlob);
+                if (!this.currentAudioBlob && !this.currentAudioUrl) return;
+                const url = this.currentAudioBlob ? URL.createObjectURL(this.currentAudioBlob) : this.currentAudioUrl;
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = `tts_${Date.now()}.wav`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                if (this.currentAudioBlob) {
+                    URL.revokeObjectURL(url);
+                }
             }
 
             // --- WAVEFORM CANVAS DRAWING ---
@@ -3961,6 +3992,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         if (item.model.includes('TW') || item.model.includes('台語帶國語')) modelKey = 'index_tw';
                         else if (item.model.includes('CosyVoice 3') || item.model.includes('台語模型4')) modelKey = 'cosyvoice';
                         else if (item.model.includes('CosyVoice 2') || item.model.includes('台語模型2')) modelKey = 'cosyvoice2';
+                        else if (item.model.includes('taigiTTS') || item.model.includes('台語外部模型6')) modelKey = 'taigi_external';
                         else if (item.model.includes('Qwen') || item.model.includes('模型1')) modelKey = 'qwen';
                         else modelKey = 'index_main';
                     }
@@ -3998,7 +4030,7 @@ curl http://your-tts-host.example.com:8006/voices</div>
                                     </svg>
                                 </button>
                                 <span style="font-size: 0.7rem; color: var(--text-muted);">
-                                    ${(item.audioData.size / 1024).toFixed(1)} KB
+                                    ${item.audioSizeLabel || (item.audioData ? `${(item.audioData.size / 1024).toFixed(1)} KB` : 'External URL')}
                                 </span>
                             </div>
                             <div style="display: flex; gap: 0.25rem;">
@@ -4036,24 +4068,36 @@ curl http://your-tts-host.example.com:8006/voices</div>
                         if (item.model.includes('TW') || item.model.includes('台語帶國語')) modelKey = 'index_tw';
                         else if (item.model.includes('CosyVoice 3') || item.model.includes('台語模型4')) modelKey = 'cosyvoice';
                         else if (item.model.includes('CosyVoice 2') || item.model.includes('台語模型2')) modelKey = 'cosyvoice2';
+                        else if (item.model.includes('taigiTTS') || item.model.includes('台語外部模型6')) modelKey = 'taigi_external';
                         else if (item.model.includes('Qwen') || item.model.includes('模型1')) modelKey = 'qwen';
                         else modelKey = 'index_main';
                     }
-                    this.loadAudioToPlayer(item.audioData, item.text, item.model, item.voice, modelKey);
+                    const source = item.audioData || item.audioUrl;
+                    if (!source) {
+                        this.showToast('error', '播放失敗', '此歷史紀錄缺少可播放音訊來源');
+                        return;
+                    }
+                    this.loadAudioToPlayer(source, item.text, item.model, item.voice, modelKey);
                 }
             }
 
             downloadHistoryItem(id) {
                 const item = this.historyItems.find(h => h.id === id);
                 if (item) {
-                    const url = URL.createObjectURL(item.audioData);
+                    const url = item.audioData ? URL.createObjectURL(item.audioData) : item.audioUrl;
+                    if (!url) {
+                        this.showToast('error', '下載失敗', '此歷史紀錄缺少可下載音訊來源');
+                        return;
+                    }
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = `tts_${id}.wav`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
+                    if (item.audioData) {
+                        URL.revokeObjectURL(url);
+                    }
                 }
             }
 
